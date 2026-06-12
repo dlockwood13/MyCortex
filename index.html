@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<meta name="theme-color" content="#0E1020" />
+<title>Cortex — Postgraduate Psychology</title>
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+<link rel="icon" href="./favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#0E1020; --surface:#161829; --surface2:#1e2138; --line:rgba(236,231,218,.10);
+  --text:#ECE7DA; --muted:#9A9AB6; --gold:#C9A227; --teal:#5BE0C9; --bad:#E06D7A;
+  --maxw:680px;
+  --serif:"Fraunces",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--ink);color:var(--text);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+#root,.app{height:100%}
+button{font-family:inherit;cursor:pointer}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.app{display:flex;flex-direction:column;height:100dvh;max-width:var(--maxw);margin:0 auto;
+  background:radial-gradient(120% 80% at 50% -10%, #1a1330 0%, var(--ink) 55%);position:relative}
+
+/* top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:max(10px,env(safe-area-inset-top)) 18px 10px;border-bottom:1px solid var(--line);
+  background:rgba(14,16,32,.7);backdrop-filter:blur(10px);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:9px}
+.brand .mark{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(140deg,#3a2150,#0E1020);border:1px solid var(--gold);
+  color:var(--gold);font-family:var(--serif);font-weight:600;font-size:17px;box-shadow:0 0 18px rgba(201,162,39,.25)}
+.brand .word{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:.3px}
+.pill{font-family:var(--mono);font-size:11px;letter-spacing:.4px;color:var(--gold);
+  background:rgba(201,162,39,.10);border:1px solid rgba(201,162,39,.35);border-radius:999px;padding:5px 11px}
+.pill.ghosted{color:var(--muted);border-color:var(--line);background:transparent}
+
+/* scroll area */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll.is-feed{scroll-snap-type:y mandatory;scroll-padding-top:0}
+
+/* feed cards */
+.feed{display:flex;flex-direction:column}
+.card{scroll-snap-align:start;min-height:calc(100dvh - 132px);display:flex;flex-direction:column;
+  justify-content:center;padding:30px 22px 26px;position:relative;border-bottom:1px solid var(--line)}
+.saved .card,.proposal .card{min-height:auto;justify-content:flex-start;padding:24px 22px;
+  margin:0 0 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.card-rule{position:absolute;left:22px;right:22px;top:30px;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent 70%);opacity:.8}
+.saved .card-rule,.proposal .card-rule{display:none}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin:14px 0 22px}
+.callno{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.type-eyebrow{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.card-disc{font-family:var(--mono);font-size:12px;letter-spacing:.3px;margin-bottom:10px;
+  padding-left:12px;border-left:3px solid hsl(var(--dh) 55% 60% / .8)}
+.card-title{font-family:var(--serif);font-weight:600;font-size:clamp(25px,6.2vw,33px);line-height:1.12;margin:0 0 16px}
+.card-body{font-size:16.5px;line-height:1.58;color:#dcd8cc;margin:0;max-width:36em}
+
+/* check / quiz */
+.check{margin-top:20px}
+.ghost{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:12px;
+  padding:11px 16px;font-size:14px;font-weight:500;transition:border-color .15s,background .15s}
+.ghost:hover{border-color:var(--gold);color:var(--gold)}
+.ghost.danger:hover{border-color:var(--bad);color:var(--bad)}
+.quiz{border:1px solid var(--line);border-radius:14px;padding:16px;background:rgba(30,33,56,.5)}
+.quiz-q{font-size:15px;font-weight:600;margin:0 0 12px;line-height:1.4}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;background:var(--surface2);border:1px solid var(--line);color:var(--text);
+  border-radius:10px;padding:11px 13px;font-size:14px;line-height:1.35;transition:border-color .12s}
+.opt:hover:not(:disabled){border-color:var(--muted)}
+.opt.right{border-color:var(--teal);background:rgba(91,224,201,.12);color:#d6fff5}
+.opt.wrong{border-color:var(--bad);background:rgba(224,109,122,.12)}
+.opt:disabled{cursor:default}
+.quiz-why{font-size:13.5px;line-height:1.5;color:var(--muted);margin:12px 0 0}
+
+/* card footer */
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:24px;gap:12px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.5px;
+  border:1px solid;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.foot-actions{display:flex;gap:8px}
+.act{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;
+  padding:8px 14px;font-size:13px;font-weight:500;transition:all .14s}
+.act:hover{color:var(--text);border-color:var(--muted)}
+.act.on{color:var(--gold);border-color:rgba(201,162,39,.5);background:rgba(201,162,39,.10)}
+
+.feed-end{min-height:40vh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;gap:6px;padding:40px 24px;scroll-snap-align:start}
+.feed-end p{font-family:var(--serif);font-size:20px;margin:0}
+.feed-end span{color:var(--muted);font-size:13.5px;max-width:24em}
+
+.empty{padding:60px 28px;text-align:center;color:var(--muted);font-size:15px;line-height:1.6}
+
+/* page chrome (browse/saved/proposal/you) */
+.browse,.saved,.proposal,.you{padding:24px 20px 40px}
+.page-title{font-family:var(--serif);font-weight:600;font-size:30px;margin:4px 0 6px}
+.page-sub{color:var(--muted);font-size:14px;line-height:1.5;margin:0 0 22px;max-width:34em}
+
+/* browse */
+.dom-block{margin-bottom:26px}
+.dom-label{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin:0 0 12px}
+.disc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.disc-card{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:14px;display:flex;flex-direction:column;gap:8px;color:var(--text);
+  border-left:3px solid hsl(var(--dh) 55% 60% / .85);transition:transform .12s,border-color .12s}
+.disc-card:hover{transform:translateY(-2px);border-color:hsl(var(--dh) 55% 62%)}
+.disc-code{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--muted)}
+.disc-name{font-size:14px;font-weight:600;line-height:1.25;min-height:2.4em}
+.bar{height:4px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.bar i{display:block;height:100%;background:hsl(var(--dh) 60% 62%);border-radius:99px}
+.disc-meta{font-family:var(--mono);font-size:10px;color:var(--muted)}
+
+/* proposal */
+.prop-progress{height:5px;border-radius:99px;background:var(--surface2);overflow:hidden;margin:-8px 0 22px}
+.prop-progress i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--gold))}
+.field{margin-bottom:18px;display:flex;flex-direction:column;gap:5px}
+.field label{font-family:var(--serif);font-size:16px;font-weight:600}
+.field-hint{color:var(--muted);font-size:12.5px;line-height:1.45}
+.field input,.field textarea{width:100%;background:var(--surface);border:1px solid var(--line);
+  border-radius:10px;color:var(--text);font-family:var(--sans);font-size:14.5px;line-height:1.5;
+  padding:11px 12px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--gold)}
+.prop-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.file-btn{display:inline-flex;align-items:center}
+
+/* you */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center}
+.stat b{display:block;font-family:var(--serif);font-size:24px;font-weight:600;color:var(--gold)}
+.stat span{font-size:10.5px;color:var(--muted);letter-spacing:.2px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+.panel h3{font-family:var(--serif);font-size:18px;margin:0 0 4px}
+.panel-sub{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 14px}
+.seg{display:flex;gap:6px;background:var(--surface2);border-radius:12px;padding:4px}
+.seg-btn{flex:1;background:transparent;border:none;color:var(--muted);border-radius:9px;padding:9px;font-size:13px;font-weight:500}
+.seg-btn.on{background:var(--ink);color:var(--gold)}
+.path{display:flex;flex-direction:column;gap:8px}
+.path-row{display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--line);
+  border-radius:10px;padding:11px 13px;color:var(--text);text-align:left}
+.path-row:hover{border-color:var(--gold)}
+.path-code{font-family:var(--mono);font-size:10px;color:var(--muted);width:42px}
+.path-name{flex:1;font-size:14px;font-weight:500}
+.path-pct{font-family:var(--mono);font-size:12px;color:var(--teal)}
+.focus-note{font-size:13px;color:var(--muted);margin:14px 0 0;line-height:1.5}
+.link{background:none;border:none;color:var(--gold);text-decoration:underline;font-size:13px;padding:0}
+.colophon{text-align:center;color:var(--muted);font-size:11.5px;margin-top:26px;line-height:1.6;font-family:var(--mono)}
+
+/* tab bar */
+.tabbar{display:flex;border-top:1px solid var(--line);background:rgba(14,16,32,.92);
+  backdrop-filter:blur(12px);padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;background:none;border:none;color:var(--muted);display:flex;flex-direction:column;
+  align-items:center;gap:3px;padding:9px 0 8px;font-size:10.5px;letter-spacing:.2px}
+.tab-ic{font-size:17px;line-height:1}
+.tab.on{color:var(--gold)}
+
+@media(min-width:560px){.disc-grid{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script>
+/* Cortex — postgraduate psychology content.
+   Card types: theory | study | debate | method | frontier
+   level: 7 (taught mastery) | 8 (research frontier)
+   UK English. No em dashes. */
+window.CORTEX_DATA = {
+  domains: {
+    applied:  { label: "Applied",   hue: 38  },
+    clinical: { label: "Clinical",  hue: 192 },
+    cognitive:{ label: "Cognitive", hue: 268 },
+    neuro:    { label: "Neuro",     hue: 330 },
+    method:   { label: "Method",    hue: 150 },
+    social:   { label: "Social",    hue: 14  }
+  },
+  disciplines: [
+    {
+      code: "ABN", name: "Abnormal psychology", domain: "clinical",
+      cards: [
+        { type:"theory", level:7, title:"From the four Ds to harmful dysfunction",
+          body:"Deviance, distress, dysfunction and danger are the classic markers, but Wakefield's harmful dysfunction account reframes disorder as a failure of an evolved function that also causes harm by social values. It is the bridge between a purely statistical and a purely normative definition." },
+        { type:"debate", level:7, title:"Is 'abnormal' a category or a continuum?",
+          body:"Taxometric work (Meehl, Ruscio) tests whether conditions are latent classes or points on a dimension. Most common presentations, depression and anxiety especially, behave dimensionally, which undercuts the categorical logic of DSM thresholds." },
+        { type:"frontier", level:8, title:"RDoC as a replacement ontology",
+          body:"The NIMH Research Domain Criteria abandon disorder categories for transdiagnostic constructs (e.g. negative valence, cognitive systems) measured across genes, circuits and behaviour. A live thesis question is whether RDoC dimensions predict treatment response better than DSM labels do." }
+      ],
+      quiz: [
+        { q:"Wakefield's 'harmful dysfunction' requires which two components?", a:["A failure of an evolved function AND harm by social standards","Statistical rarity AND personal distress","Danger to self AND danger to others","Cultural deviance AND impaired insight"], correct:0,
+          why:"Both an objective dysfunction and a value-laden harm must be present; either alone is insufficient." },
+        { q:"Taxometric analysis is used primarily to decide whether a condition is...", a:["Categorical or dimensional in structure","Heritable or environmental","Acute or chronic","Treatable or untreatable"], correct:0,
+          why:"It tests latent structure: discrete taxon versus continuous dimension." }
+      ]
+    },
+    {
+      code: "BEH", name: "Behavioural psychology / neuroscience", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"Rescorla-Wagner and prediction error",
+          body:"Associative strength updates in proportion to surprise: learning happens only when an outcome is not already predicted. The model explains blocking and overshadowing and is the conceptual ancestor of dopaminergic reward-prediction-error accounts." },
+        { type:"study", level:7, title:"Schultz: dopamine codes prediction error",
+          body:"Single-unit recordings in primate midbrain showed dopamine neurons fire to unexpected reward, shift to the predictive cue once learned, and dip below baseline when an expected reward is omitted. This mapped Rescorla-Wagner onto a literal neural signal." },
+        { type:"frontier", level:8, title:"Model-based vs model-free control",
+          body:"Behaviour blends a fast habitual (model-free) system and a deliberative (model-based) system. The two-step task dissociates them, and the balance between them is altered in compulsive and addictive disorders, a fertile area for computational-psychiatry theses." }
+      ],
+      quiz: [
+        { q:"In Rescorla-Wagner, learning stops when...", a:["The outcome is fully predicted (zero prediction error)","The reward becomes very large","The cue is presented in isolation","Extinction begins"], correct:0,
+          why:"Update is proportional to the discrepancy between predicted and actual outcome; no surprise, no learning." }
+      ]
+    },
+    {
+      code: "CLN", name: "Clinical psychology / neuroscience", domain: "clinical",
+      cards: [
+        { type:"method", level:7, title:"Formulation over diagnosis",
+          body:"Clinical psychology privileges idiographic formulation: a hypothesis linking predisposing, precipitating, perpetuating and protective factors (the 5 Ps) to presenting problems. It is testable and revisable, unlike a static label." },
+        { type:"debate", level:7, title:"The dodo bird verdict",
+          body:"Meta-analyses repeatedly find broadly equivalent outcomes across bona fide therapies, implicating common factors (alliance, expectancy) over specific techniques. Critics argue equivalence is an artefact of underpowered non-inferiority designs." },
+        { type:"frontier", level:8, title:"Precision mental health",
+          body:"Can we match patients to treatments using baseline markers? Personalised advantage indices and machine-learning treatment-selection models are promising but routinely fail to replicate out of sample, the central methodological problem of the field." }
+      ],
+      quiz: [
+        { q:"The '5 Ps' formulation includes predisposing, precipitating, perpetuating, protective and...", a:["Presenting factors","Pharmacological factors","Prognostic factors","Personality factors"], correct:0,
+          why:"Presenting problem anchors the formulation that the other four factors explain." }
+      ]
+    },
+    {
+      code: "COG", name: "Cognitive psychology / neuroscience", domain: "cognitive",
+      cards: [
+        { type:"theory", level:7, title:"Predictive processing",
+          body:"The brain is cast as a hierarchical generative model minimising prediction error: perception is controlled hallucination constrained by sensory input, and attention is precision-weighting of prediction errors. It unifies perception, action and learning under one objective." },
+        { type:"study", level:7, title:"Baddeley and Hitch working memory",
+          body:"The multicomponent model (phonological loop, visuospatial sketchpad, central executive, later the episodic buffer) replaced the unitary short-term store and remains the most cited framework for temporary maintenance and manipulation of information." },
+        { type:"debate", level:8, title:"Does cognition need representations?",
+          body:"Enactivist and ecological accounts argue intelligent behaviour can emerge from agent-environment coupling without internal representations. The representational-hungry problem (offline, absent, counterfactual reasoning) is the standard rebuttal." }
+      ],
+      quiz: [
+        { q:"Under predictive processing, attention is best described as...", a:["Precision-weighting of prediction errors","A spotlight of fixed capacity","Serial search through items","Passive sensory amplification"], correct:0,
+          why:"Attention modulates the gain on prediction errors according to their expected reliability." }
+      ]
+    },
+    {
+      code: "COM", name: "Community psychology", domain: "social",
+      cards: [
+        { type:"theory", level:7, title:"Ecological levels of analysis",
+          body:"Bronfenbrenner's nested systems (micro to macro) and Kelly's ecological principles push the unit of analysis above the individual. Distress is read as person-in-context, so intervention targets settings, not only people." },
+        { type:"method", level:7, title:"Participatory action research",
+          body:"PAR treats the community as co-researcher, collapsing the expert-subject hierarchy. It trades internal validity for ecological validity and empowerment, raising hard questions about rigour and whose knowledge counts." },
+        { type:"frontier", level:8, title:"Measuring sense of community",
+          body:"Operationalising empowerment and psychological sense of community at scale without flattening local meaning is unresolved. Multilevel models that separate individual from neighbourhood variance are the current methodological frontier." }
+      ],
+      quiz: [
+        { q:"Community psychology's defining move is to...", a:["Shift the unit of analysis above the individual to settings and systems","Replace therapy with medication","Focus only on severe mental illness","Reject all quantitative methods"], correct:0,
+          why:"It locates problems and solutions in the person-environment fit, not the individual alone." }
+      ]
+    },
+    {
+      code: "CMP", name: "Computational neuroscience / neuroinformatics", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"Hodgkin-Huxley to integrate-and-fire",
+          body:"The Hodgkin-Huxley equations model the action potential through voltage-gated conductances; leaky integrate-and-fire abstracts this for network-scale simulation. Choosing the right level of abstraction is the core craft." },
+        { type:"method", level:8, title:"Normative vs mechanistic models",
+          body:"Marr's three levels (computational, algorithmic, implementational) discipline the field: a normative model asks what problem the system optimally solves, a mechanistic model asks how circuits do it. Conflating them is the commonest reviewer complaint." },
+        { type:"frontier", level:8, title:"Neural network models as hypotheses",
+          body:"Deep nets trained on naturalistic tasks now predict ventral-stream responses better than hand-built models. Whether they are explanations or merely high-dimensional curve fits is an open epistemological dispute." }
+      ],
+      quiz: [
+        { q:"Marr's three levels are computational, algorithmic and...", a:["Implementational","Statistical","Behavioural","Evolutionary"], correct:0,
+          why:"Implementation is the physical substrate realising the algorithm." }
+      ]
+    },
+    {
+      code: "CNS", name: "Counselling psychology", domain: "clinical",
+      cards: [
+        { type:"theory", level:7, title:"The therapeutic alliance as mechanism",
+          body:"Bordin's bond-tasks-goals model treats the alliance as a pantheoretical working agreement. Alliance predicts outcome modestly but consistently, though the causal direction (alliance to change, or early change to alliance) is contested." },
+        { type:"debate", level:7, title:"Humanistic roots vs evidence-based pressure",
+          body:"Counselling psychology grew from a phenomenological, relationship-centred tradition now under pressure to demonstrate manualised efficacy. The tension between fidelity and responsiveness is the discipline's identity question." },
+        { type:"frontier", level:8, title:"Routine outcome monitoring",
+          body:"Session-by-session feedback systems (e.g. measurement-based care) can reduce deterioration, but uptake, gaming and the meaning of brief self-report scales are live methodological problems." }
+      ],
+      quiz: [
+        { q:"Bordin's three components of the alliance are bond, goals and...", a:["Tasks","Trust","Transference","Technique"], correct:0,
+          why:"Agreement on the tasks of therapy, alongside goals and the bond, defines the working alliance." }
+      ]
+    },
+    {
+      code: "CMP2", name: "Comparative psychology", domain: "cognitive",
+      cards: [
+        { type:"theory", level:7, title:"Morgan's Canon",
+          body:"Do not explain a behaviour by a higher psychological faculty if a lower one suffices. It is a parsimony heuristic, not a law, and over-applied it risks anthropodenial as readily as anthropomorphism risks the opposite." },
+        { type:"study", level:8, title:"Theory of mind in corvids and apes",
+          body:"Scrub jays re-cache food when watched by a pilferer; chimpanzees track what a competitor can see. Whether this is genuine mental-state attribution or behaviour-reading on observable cues is the field's defining unresolved debate." },
+        { type:"method", level:7, title:"The comparative method's confounds",
+          body:"Cross-species comparison is correlational and confounded by phylogeny. Phylogenetic comparative methods correct for shared ancestry so species are not treated as independent data points." }
+      ],
+      quiz: [
+        { q:"Morgan's Canon advises researchers to...", a:["Prefer the lower psychological explanation when it is sufficient","Always assume animals lack minds","Never compare across species","Treat species as independent data points"], correct:0,
+          why:"It is a parsimony principle favouring simpler faculties when they account for the behaviour." }
+      ]
+    },
+    {
+      code: "CUL", name: "Cultural / cross-cultural psychology", domain: "social",
+      cards: [
+        { type:"debate", level:7, title:"The WEIRD problem",
+          body:"Henrich and colleagues showed most psychology samples are Western, Educated, Industrialised, Rich, Democratic and are outliers on perception, fairness and self-concept. It is a generalisability crisis predating the replication crisis." },
+        { type:"theory", level:7, title:"Emic vs etic, and the imposed-etic trap",
+          body:"Cross-cultural psychology often exports a construct (etic) and measures it everywhere; cultural psychology builds meaning from within (emic). Treating a culture-specific instrument as universal is the imposed-etic fallacy." },
+        { type:"method", level:8, title:"Measurement invariance",
+          body:"Comparing means across cultures is meaningless unless configural, metric and scalar invariance hold. Most published cross-cultural comparisons never test scalar invariance, quietly invalidating their headline claims." }
+      ],
+      quiz: [
+        { q:"Comparing latent means across groups validly requires at least...", a:["Scalar measurement invariance","Configural invariance only","Equal sample sizes","Identical reliability"], correct:0,
+          why:"Scalar invariance (equal intercepts) is the threshold for comparing means; metric alone is not enough." }
+      ]
+    },
+    {
+      code: "DEV", name: "Developmental psychology / neuroscience", domain: "cognitive",
+      cards: [
+        { type:"debate", level:7, title:"Continuity vs stage",
+          body:"Piaget's discrete stages versus information-processing gradualism. Microgenetic studies show development is often overlapping-wave rather than staircase: multiple strategies coexist and compete rather than one replacing another." },
+        { type:"study", level:7, title:"The marshmallow test, reconsidered",
+          body:"The original delay-of-gratification effect shrank dramatically once a large replication controlled for socioeconomic background. A cautionary tale about long-run predictive claims from small, unrepresentative samples." },
+        { type:"frontier", level:8, title:"Sensitive periods and plasticity",
+          body:"When do environmental inputs have outsized, time-limited effects? Distinguishing true critical windows from cumulative exposure requires longitudinal designs with within-person change, an expensive but high-value thesis territory." }
+      ],
+      quiz: [
+        { q:"Microgenetic studies suggest cognitive development is best modelled as...", a:["Overlapping waves of competing strategies","Discrete, non-overlapping stages","A single linear increase","Fixed at birth"], correct:0,
+          why:"Multiple strategies coexist and shift in frequency, rather than one cleanly replacing another." }
+      ]
+    },
+    {
+      code: "EDU", name: "Educational psychology / neuroscience", domain: "applied",
+      cards: [
+        { type:"theory", level:7, title:"Cognitive load theory",
+          body:"Working-memory limits mean instruction must manage intrinsic, extraneous and germane load. The expertise-reversal effect warns that scaffolding which helps novices becomes redundant load for experts." },
+        { type:"study", level:7, title:"The testing effect",
+          body:"Retrieval practice produces more durable learning than restudying (Roediger and Karpicke). It is one of the most robust findings in the field, yet remains underused because it feels harder and less fluent to learners." },
+        { type:"debate", level:8, title:"Neuromyths in the classroom",
+          body:"Learning styles, left/right-brain teaching and Brain Gym persist despite no evidence. Educational neuroscience's harder task is translating real findings without overclaiming what an fMRI can tell a teacher." }
+      ],
+      quiz: [
+        { q:"The expertise-reversal effect predicts that worked-example scaffolding...", a:["Helps novices but becomes extraneous load for experts","Helps experts more than novices","Is equally useful at all levels","Increases intrinsic load"], correct:0,
+          why:"Support redundant to an expert's existing schemas consumes working memory without benefit." }
+      ]
+    },
+    {
+      code: "ENG", name: "Engineering psychology", domain: "applied",
+      cards: [
+        { type:"theory", level:7, title:"Signal detection theory",
+          body:"SDT separates sensitivity (d') from response bias (criterion), letting designers tune alarms for the cost of misses versus false alarms. It is the analytic backbone of human-factors vigilance research." },
+        { type:"study", level:7, title:"Automation and the ironies of automation",
+          body:"Bainbridge showed that automating routine control leaves humans to handle exactly the rare, hard cases for which they are now deskilled and out of the loop. More automation can mean worse human performance when it matters most." },
+        { type:"method", level:8, title:"Mental workload measurement",
+          body:"NASA-TLX, pupillometry and EEG indices each capture different facets of workload with poor convergence. Triangulating subjective, behavioural and physiological measures is the standard but unsatisfying compromise." }
+      ],
+      quiz: [
+        { q:"In signal detection theory, d' indexes ____ and the criterion indexes ____.", a:["Sensitivity; response bias","Bias; sensitivity","Speed; accuracy","Hits; misses"], correct:0,
+          why:"d' is perceptual separability of signal from noise; the criterion is where the observer sets their threshold." }
+      ]
+    },
+    {
+      code: "ENV", name: "Environmental psychology", domain: "applied",
+      cards: [
+        { type:"theory", level:7, title:"Attention Restoration Theory",
+          body:"Kaplan argued natural settings replenish directed attention through soft fascination, being-away, extent and compatibility. It underpins much green-space-and-wellbeing research, though effect sizes are heterogeneous." },
+        { type:"debate", level:7, title:"Attitudes vs behaviour gap",
+          body:"Pro-environmental attitudes predict behaviour weakly. Structural and habitual factors (infrastructure, cost, defaults) often dominate, which reframes intervention away from persuasion toward choice architecture." },
+        { type:"frontier", level:8, title:"Climate anxiety as a construct",
+          body:"Is climate anxiety a rational response, a clinical phenomenon, or both? Validating measures that distinguish adaptive concern from impairing distress is an emerging and contested research line." }
+      ],
+      quiz: [
+        { q:"Attention Restoration Theory attributes recovery mainly to...", a:["Soft fascination that does not deplete directed attention","Physical exercise","Social contact","Reduced sensory input"], correct:0,
+          why:"Effortless, soft fascination lets the directed-attention system rest and recover." }
+      ]
+    },
+    {
+      code: "EVO", name: "Evolutionary psychology", domain: "cognitive",
+      cards: [
+        { type:"theory", level:7, title:"Adaptations and the EEA",
+          body:"The mind is theorised as a set of domain-specific adaptations shaped by ancestral selection pressures (the environment of evolutionary adaptedness). The framework's power is generating predictions; its weakness is testability." },
+        { type:"debate", level:8, title:"Adaptationism and Gould's spandrels",
+          body:"Gould and Lewontin warned against just-so storytelling: not every trait is an adaptation; some are by-products (spandrels) or drift. Distinguishing adaptation from exaptation post hoc is genuinely hard." },
+        { type:"method", level:7, title:"Why reverse-engineering is risky",
+          body:"Inferring function from current utility commits the panglossian error. Stronger designs derive a priori predictions from selection theory and test them, rather than fitting a story to an observed trait." }
+      ],
+      quiz: [
+        { q:"A 'spandrel' in evolutionary theory is...", a:["A non-adaptive by-product of another trait","A directly selected adaptation","A learned behaviour","A genetic mutation"], correct:0,
+          why:"Spandrels arise as architectural by-products, not as targets of selection." }
+      ]
+    },
+    {
+      code: "EXP", name: "Experimental psychology", domain: "method",
+      cards: [
+        { type:"method", level:7, title:"Internal vs external validity trade-off",
+          body:"Tight experimental control buys causal inference but can cost generalisability. The art is designing manipulations that isolate a mechanism while preserving enough realism to mean something outside the lab." },
+        { type:"debate", level:7, title:"The replication crisis",
+          body:"The Open Science Collaboration replicated ~36% of a 100-study sample. Causes include p-hacking, low power and publication bias; remedies include preregistration, registered reports and larger samples." },
+        { type:"frontier", level:8, title:"Many-analysts studies",
+          body:"Give one dataset to many teams and analytic conclusions diverge widely. This 'garden of forking paths' shows that flexibility in analysis, not just data collection, threatens reliability, a key open-science research thread." }
+      ],
+      quiz: [
+        { q:"Preregistration primarily protects against...", a:["Undisclosed analytic flexibility (p-hacking and HARKing)","Low measurement reliability","Small effect sizes","Demand characteristics"], correct:0,
+          why:"Fixing hypotheses and analysis plans in advance constrains the researcher degrees of freedom that inflate false positives." }
+      ]
+    },
+    {
+      code: "FOR", name: "Forensic psychology / legal psychology", domain: "clinical",
+      cards: [
+        { type:"theory", level:7, title:"RNR vs the Good Lives Model",
+          body:"Risk-Need-Responsivity targets criminogenic needs in proportion to risk; the Good Lives Model adds approach goals and offender-valued outcomes. The field's central debate is whether GLM adds incremental value over a well-implemented RNR." },
+        { type:"method", level:7, title:"Actuarial vs structured professional judgement",
+          body:"Pure actuarial tools (e.g. Static-99R) often out-predict unstructured clinical judgement, but SPJ tools (e.g. HCR-20) add dynamic, formulation-linked risk. The trade-off is predictive accuracy versus clinical usefulness." },
+        { type:"debate", level:8, title:"The reliability of expert testimony",
+          body:"Eyewitness confidence, recovered memory and offender profiling have all been challenged in court. The frontier is communicating probabilistic risk to legal decision-makers without it being misheard as certainty." }
+      ],
+      quiz: [
+        { q:"Compared with actuarial tools, structured professional judgement (e.g. HCR-20) is valued mainly for...", a:["Incorporating dynamic, formulation-linked risk factors","Higher raw predictive accuracy","Being faster to administer","Removing clinician input"], correct:0,
+          why:"SPJ links risk to changeable factors and intervention, even where actuarial tools may predict marginally better." }
+      ]
+    },
+    {
+      code: "HLT", name: "Health psychology", domain: "applied",
+      cards: [
+        { type:"theory", level:7, title:"Why social cognition models underperform",
+          body:"The Theory of Planned Behaviour predicts intentions well but behaviour weakly: the intention-behaviour gap. Implementation intentions (if-then plans) close part of it by automating cue-response links." },
+        { type:"theory", level:7, title:"The biopsychosocial model",
+          body:"Engel's model insists health emerges from interacting biological, psychological and social levels. Decades on, it is criticised as a slogan rather than a testable mechanism, prompting work on specified mediation pathways." },
+        { type:"frontier", level:8, title:"N-of-1 and just-in-time interventions",
+          body:"Wearables and ecological momentary assessment enable personalised, within-person designs and adaptive interventions delivered at the moment of need. Designing valid micro-randomised trials is the methodological growth area." }
+      ],
+      quiz: [
+        { q:"Implementation intentions improve behaviour change by...", a:["Linking a specific situational cue to a planned response","Increasing motivation","Raising outcome expectancies","Strengthening attitudes"], correct:0,
+          why:"If-then plans delegate action initiation to an environmental cue, bypassing in-the-moment deliberation." }
+      ]
+    },
+    {
+      code: "IO", name: "Industrial-organizational psychology", domain: "applied",
+      cards: [
+        { type:"study", level:7, title:"Selection validity: what actually predicts performance",
+          body:"Schmidt and Hunter's meta-analyses long ranked cognitive ability and structured interviews near the top. Recent re-analyses correcting range-restriction assumptions have shifted the rankings, a live psychometric controversy." },
+        { type:"theory", level:7, title:"Job Demands-Resources model",
+          body:"Strain arises when demands exceed resources; engagement arises when resources are high. JD-R is flexible and widely used, which is also the critique: it can accommodate almost any finding post hoc." },
+        { type:"frontier", level:8, title:"Algorithmic hiring and adverse impact",
+          body:"ML selection tools can encode and amplify bias while appearing objective. Validating them for fairness across protected groups, and defending that validation legally, is an urgent applied research problem." }
+      ],
+      quiz: [
+        { q:"The Job Demands-Resources model's main criticism is that it...", a:["Is so flexible it can fit almost any result","Ignores the work environment","Applies only to manual jobs","Cannot be measured"], correct:0,
+          why:"Its breadth makes it hard to falsify, a recurring concern with broad organisational frameworks." }
+      ]
+    },
+    {
+      code: "MOL", name: "Molecular / cellular neuroscience", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"LTP as a synaptic basis of memory",
+          body:"Long-term potentiation, NMDA-receptor-dependent strengthening of synapses, is the leading cellular model of learning. Hebb's 'cells that fire together wire together' finds a molecular mechanism here." },
+        { type:"method", level:8, title:"Optogenetics and causal circuit logic",
+          body:"Light-gated channels let researchers switch defined neuron populations on or off in milliseconds, moving the field from correlation to causation. The caveat is that artificial drive may not reflect natural firing." },
+        { type:"frontier", level:8, title:"The engram",
+          body:"Activity-dependent tagging shows specific neuronal ensembles store specific memories and can be reactivated to trigger recall. Whether the engram is necessary, sufficient and stable is an active, fundable question." }
+      ],
+      quiz: [
+        { q:"LTP is most associated with which receptor's role in detecting coincident activity?", a:["NMDA receptor","GABA-A receptor","Dopamine D2 receptor","Mu-opioid receptor"], correct:0,
+          why:"The NMDA receptor's voltage- and ligand-gating makes it a coincidence detector central to Hebbian LTP." }
+      ]
+    },
+    {
+      code: "ANA", name: "Neuroanatomy", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"Functional segregation and integration",
+          body:"The brain both localises functions (segregation) and binds them through connectivity (integration). Modern anatomy is as much about connectomes and white-matter tracts as about cytoarchitectonic areas." },
+        { type:"study", level:7, title:"Patient H.M. and the medial temporal lobe",
+          body:"Bilateral medial-temporal resection produced dense anterograde amnesia with spared procedural learning, dissociating declarative from non-declarative memory and anchoring decades of hippocampal research." },
+        { type:"method", level:8, title:"Tractography's seductive errors",
+          body:"Diffusion MRI reconstructs white-matter pathways but invents false tracts at crossing fibres and misses true ones. Treating tractography output as ground-truth anatomy is a common and serious overreach." }
+      ],
+      quiz: [
+        { q:"Patient H.M.'s spared procedural learning demonstrated that...", a:["Declarative and non-declarative memory are dissociable systems","All memory depends on the hippocampus","Memory is a single unitary store","Amnesia abolishes all new learning"], correct:0,
+          why:"He learned motor skills (e.g. mirror drawing) despite no memory of practising, separating the systems." }
+      ]
+    },
+    {
+      code: "NET", name: "Neuroethics", domain: "neuro",
+      cards: [
+        { type:"debate", level:7, title:"Neuroprediction and responsibility",
+          body:"If brain markers predict reoffending, may they inform sentencing or parole? The tension between probabilistic group data and individual desert, and between prediction and free will, sits at the centre of the field." },
+        { type:"debate", level:8, title:"Cognitive liberty and enhancement",
+          body:"Pharmacological and stimulation-based enhancement raise questions of authenticity, coercion (workplace pressure to enhance) and fairness. Neuroethics asks not only can we but who decides and who bears the cost." },
+        { type:"frontier", level:8, title:"Consciousness and the unresponsive patient",
+          body:"Covert awareness detected by neuroimaging in some behaviourally unresponsive patients forces revisions of diagnosis, consent and end-of-life decisions, an area where the science outpaces the ethical frameworks." }
+      ],
+      quiz: [
+        { q:"A core neuroethical objection to neuroprediction in sentencing is...", a:["Applying group-level probabilities to an individual's desert","That brain scans are too expensive","That judges dislike statistics","That it slows trials"], correct:0,
+          why:"Punishment is keyed to individual responsibility, which sits uneasily with probabilistic group predictions." }
+      ]
+    },
+    {
+      code: "GEN", name: "Neurogenetics", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"Polygenicity and missing heritability",
+          body:"Most behavioural traits are highly polygenic: thousands of variants of tiny effect. Twin-estimated heritability exceeds variance explained by known variants, the missing-heritability gap that GWAS keeps narrowing." },
+        { type:"method", level:8, title:"Polygenic scores and their limits",
+          body:"PGS aggregate genome-wide effects to predict traits, but portability across ancestries is poor because base GWAS are overwhelmingly European. Deploying PGS clinically risks widening health inequities." },
+        { type:"debate", level:8, title:"Gene-environment interplay",
+          body:"Candidate-gene-by-environment findings (e.g. 5-HTTLPR x stress) largely failed to replicate at scale. The lesson reshaped the field toward genome-wide, well-powered designs and scepticism of single-variant stories." }
+      ],
+      quiz: [
+        { q:"Polygenic scores transfer poorly across ancestries chiefly because...", a:["Discovery GWAS samples are predominantly European","Genes differ entirely between populations","PGS only capture rare variants","Heritability is zero in other groups"], correct:0,
+          why:"Effect estimates and linkage patterns from European cohorts generalise weakly elsewhere." }
+      ]
+    },
+    {
+      code: "IMG", name: "Neuroimaging", domain: "neuro",
+      cards: [
+        { type:"method", level:7, title:"What BOLD actually measures",
+          body:"fMRI tracks the haemodynamic response, an indirect, slow proxy for neural activity with poor temporal but good spatial resolution. Forgetting that BOLD is not spikes leads to overinterpretation." },
+        { type:"debate", level:7, title:"Reverse inference",
+          body:"Concluding a mental process from activation in a region (e.g. 'the amygdala lit up, so they felt fear') is invalid unless the region is selective for that process. It is one of the field's most common errors." },
+        { type:"frontier", level:8, title:"Power, reliability and the dead salmon",
+          body:"Small samples and uncorrected multiple comparisons (famously, apparent activation in a dead salmon) produced unreliable maps. Large consortia, multiple-comparison correction and reliability studies are the corrective." }
+      ],
+      quiz: [
+        { q:"'Reverse inference' is invalid unless...", a:["The activated region is selectively engaged by that process","The sample is large","The scanner is high-field","The task is well controlled"], correct:0,
+          why:"Inferring a process from a region needs that region to be specific to the process, which most are not." }
+      ]
+    },
+    {
+      code: "NEU", name: "Neurology", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"Localisation through lesions",
+          body:"Classic neurology infers function from deficit: Broca's and Wernicke's aphasias, neglect, the disconnection syndromes. Lesion-symptom mapping remains a uniquely causal complement to imaging's correlations." },
+        { type:"study", level:7, title:"Phineas Gage and the frontal lobes",
+          body:"Surviving a rod through the prefrontal cortex with intact intellect but altered personality, Gage became the founding case for prefrontal involvement in social conduct and self-regulation, with the usual caveats about a single, embellished case." },
+        { type:"frontier", level:8, title:"Network neurology",
+          body:"Conditions once seen as focal (e.g. some dementias) are increasingly understood as connectome diseases that spread along networks. This reframes both diagnosis and the search for biomarkers." }
+      ],
+      quiz: [
+        { q:"Lesion-symptom mapping offers what imaging often cannot:", a:["Causal evidence that a region is necessary for a function","Higher spatial resolution","Real-time activity","Whole-brain coverage"], correct:0,
+          why:"A deficit following damage shows the region is necessary, a causal claim correlational imaging cannot make." }
+      ]
+    },
+    {
+      code: "PHY", name: "Neurophysiology", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"Rate vs temporal coding",
+          body:"Does information live in firing rate, precise spike timing, or population patterns? The neural-coding debate shapes how every downstream analysis interprets a spike train." },
+        { type:"study", level:7, title:"Hubel and Wiesel's receptive fields",
+          body:"Recordings in visual cortex revealed orientation-selective cells and a hierarchy of simple and complex cells, founding systems neuroscience and inspiring convolutional network architectures decades later." },
+        { type:"frontier", level:8, title:"Oscillations and binding",
+          body:"Gamma synchrony was proposed to bind distributed features into unified percepts. Whether oscillations are causal mechanisms or epiphenomenal readouts of computation is still genuinely open." }
+      ],
+      quiz: [
+        { q:"Hubel and Wiesel's simple cells are characterised by...", a:["Selectivity for stimulus orientation in a specific location","Colour-opponency only","Responses to faces","No spatial tuning"], correct:0,
+          why:"Simple cells respond to oriented edges at particular retinal positions, the building blocks of the visual hierarchy." }
+      ]
+    },
+    {
+      code: "NPS", name: "Neuropsychology / neuropsychiatry", domain: "clinical",
+      cards: [
+        { type:"method", level:7, title:"Double dissociation",
+          body:"If patient A fails task X but passes Y, and patient B shows the reverse, the two functions are likely independent. It is neuropsychology's strongest logical tool, though pure cases are rare and noisy." },
+        { type:"theory", level:7, title:"Cognitive reserve",
+          body:"Education and lifelong cognitive activity buffer the clinical expression of brain pathology. Reserve explains why pathology and symptoms decouple and complicates the mapping from biomarker to diagnosis." },
+        { type:"frontier", level:8, title:"Single-case stats done properly",
+          body:"Comparing one patient to controls needs modified t-tests (Crawford and Howell), not z-scores, to avoid spurious deficits. Methodological rigour in single-case work is an underappreciated thesis strength." }
+      ],
+      quiz: [
+        { q:"A double dissociation provides the strongest evidence that two functions are...", a:["Functionally independent","Located in the same region","Both impaired together","Learned, not innate"], correct:0,
+          why:"Opposite patterns across two patients argue the functions can fail separately, hence are dissociable." }
+      ]
+    },
+    {
+      code: "SUR", name: "Neurosurgery (psychological aspects)", domain: "clinical",
+      cards: [
+        { type:"study", level:7, title:"Awake mapping and Penfield's legacy",
+          body:"Electrical stimulation during awake craniotomy maps eloquent cortex to spare language and motor function. Penfield's homunculus came from exactly this method, which remains clinical practice today." },
+        { type:"theory", level:7, title:"DBS as a reversible lesion",
+          body:"Deep brain stimulation modulates circuits in Parkinson's and treatment-resistant depression and OCD. Reframing psychiatric disorder as circuit dysfunction is conceptually powerful and ethically fraught." },
+        { type:"frontier", level:8, title:"Closed-loop neuromodulation",
+          body:"Stimulators that read a biomarker and respond adaptively promise precision but raise questions about agency: if a device detects and pre-empts a mood state, where does the self end and the device begin?" }
+      ],
+      quiz: [
+        { q:"Deep brain stimulation is sometimes described as a 'reversible lesion' because it...", a:["Modulates circuit activity without destroying tissue","Permanently removes neurons","Replaces medication entirely","Works only in psychiatry"], correct:0,
+          why:"Unlike ablation, stimulation can be adjusted or switched off, modulating rather than destroying the circuit." }
+      ]
+    },
+    {
+      code: "NUT", name: "Nutritional neuroscience", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"The gut-brain axis",
+          body:"Bidirectional signalling via the vagus, immune and microbial-metabolite pathways links diet, microbiome and mood. The mechanisms are plausible; the human causal evidence is far thinner than popular coverage implies." },
+        { type:"debate", level:8, title:"Nutritional psychiatry's evidence problem",
+          body:"Dietary RCTs (e.g. SMILES trial) are promising but small, unblinded and prone to expectancy effects. Distinguishing real metabolic mechanisms from placebo and confounding is the field's central methodological challenge." },
+        { type:"method", level:7, title:"Why nutrition epidemiology misleads",
+          body:"Self-reported diet, residual confounding and the multiplicity of correlated nutrients make observational nutrition claims fragile. Mendelian randomisation is one way to probe causality." }
+      ],
+      quiz: [
+        { q:"A major reason dietary psychiatry trials are hard to interpret is...", a:["Difficulty blinding participants to a dietary intervention","Diet has no biological effect","Brains cannot use nutrients","Sample sizes are always huge"], correct:0,
+          why:"People know what they are eating, so expectancy and placebo effects are hard to rule out." }
+      ]
+    },
+    {
+      code: "PER", name: "Perceptual psychology / sensory neuroscience", domain: "cognitive",
+      cards: [
+        { type:"theory", level:7, title:"Bayesian perception",
+          body:"Percepts combine noisy sensory evidence (likelihood) with prior expectations, weighted by reliability. Illusions become optimal inferences under the wrong priors rather than system failures." },
+        { type:"study", level:7, title:"McGurk effect and multisensory integration",
+          body:"Seeing one articulation while hearing another yields a third perceived phoneme, showing perception fuses modalities automatically and pre-consciously. It is a clean demonstration that we perceive inferences, not inputs." },
+        { type:"frontier", level:8, title:"Perceptual learning's specificity",
+          body:"Training sharpens perception but often fails to transfer beyond the trained stimulus and location, constraining theories of where plasticity sits. Maximising transfer is both a theoretical and applied (e.g. low vision) goal." }
+      ],
+      quiz: [
+        { q:"Under Bayesian accounts, a perceptual illusion reflects...", a:["Optimal inference given a misleading prior or noisy evidence","A failure of the sensory organs","Conscious misjudgement","Damage to the cortex"], correct:0,
+          why:"The percept is the best guess given priors and likelihoods, even when that guess is objectively wrong." }
+      ]
+    },
+    {
+      code: "PRS", name: "Personality psychology", domain: "social",
+      cards: [
+        { type:"theory", level:7, title:"The Big Five and its rivals",
+          body:"The lexical Five-Factor structure is robust across cultures, but HEXACO adds Honesty-Humility and challenges whether five is the right number. Structure depends on the items you start from." },
+        { type:"debate", level:7, title:"The person-situation debate, resolved-ish",
+          body:"Mischel's attack on cross-situational consistency was answered by aggregation and by if-then behavioural signatures: people are consistent in how they vary across situations. Traits and situations are not rivals." },
+        { type:"frontier", level:8, title:"Personality as a dynamic system",
+          body:"Whole Trait Theory and network models recast traits as density distributions of states and as causally interacting symptoms, moving beyond static factor scores toward process. Intensive longitudinal data drive this work." }
+      ],
+      quiz: [
+        { q:"Mischel's challenge to trait consistency was largely answered by...", a:["Aggregating behaviour and modelling stable if-then signatures","Abandoning traits entirely","Proving situations do not matter","Adding a sixth factor"], correct:0,
+          why:"Consistency appears at the level of aggregated behaviour and of how a person varies across situations." }
+      ]
+    },
+    {
+      code: "PLG", name: "Psycholinguistics / neurolinguistics", domain: "cognitive",
+      cards: [
+        { type:"debate", level:7, title:"Modularity vs interaction in parsing",
+          body:"Garden-path sentences fuel the debate over whether syntax is computed autonomously then revised, or whether context and semantics intervene immediately. The visual-world paradigm tipped evidence toward rapid interaction." },
+        { type:"study", level:7, title:"The N400 and semantic prediction",
+          body:"The N400 ERP component scales with how unexpected a word is in context, evidence that comprehension is predictive, not purely integrative. It reshaped models of how meaning is accessed in real time." },
+        { type:"frontier", level:8, title:"Large language models as cognitive models",
+          body:"LLM surprisal predicts human reading times well, prompting the claim they are theories of comprehension. Sceptics note humans and transformers can match behaviour while computing very differently." }
+      ],
+      quiz: [
+        { q:"A larger N400 amplitude indicates a word that is...", a:["Less expected in its context","Longer in length","More frequent","Earlier in the sentence"], correct:0,
+          why:"The N400 grows with semantic unexpectedness, indexing predictive processing of meaning." }
+      ]
+    },
+    {
+      code: "PSM", name: "Psychometrics", domain: "method",
+      cards: [
+        { type:"theory", level:7, title:"Classical test theory vs IRT",
+          body:"CTT treats reliability as a whole-test property; item response theory models the probability of a response as a function of trait level and item parameters, giving item-level precision and test equating. IRT is the modern standard for serious measurement." },
+        { type:"debate", level:7, title:"Validity is an argument, not a coefficient",
+          body:"Messick reframed validity as a unified, evidential argument about score interpretation and use, including consequences. A single correlation does not validate a test; a structured case does." },
+        { type:"frontier", level:8, title:"The reliability paradox in cognitive tasks",
+          body:"Robust experimental effects (e.g. Stroop) often have terrible individual-differences reliability because they minimise between-person variance by design. This quietly invalidates many brain-behaviour correlation studies." }
+      ],
+      quiz: [
+        { q:"The 'reliability paradox' arises because experimental tasks are designed to...", a:["Minimise between-person variance, which lowers reliability of difference scores","Maximise reliability at all costs","Use very large samples","Avoid practice effects"], correct:0,
+          why:"Good experimental effects shrink individual variation, which is exactly what reliability of individual differences depends on." }
+      ]
+    },
+    {
+      code: "PPT", name: "Psychopathology", domain: "clinical",
+      cards: [
+        { type:"theory", level:7, title:"The p-factor",
+          body:"A general psychopathology factor accounts for comorbidity across disorders, much as g does for cognition. Whether p is a substantive cause, a measurement artefact, or impairment severity is unresolved and important." },
+        { type:"frontier", level:8, title:"Network theory of disorders",
+          body:"Symptoms may not reflect a latent disease but cause each other directly (insomnia to fatigue to low mood). Network models reframe disorders as self-sustaining symptom systems, with implications for which symptom to treat first." },
+        { type:"method", level:7, title:"HiTOP as a dimensional alternative",
+          body:"The Hierarchical Taxonomy of Psychopathology organises symptoms empirically into spectra rather than categories, aiming to fix DSM's comorbidity and heterogeneity problems with data-driven structure." }
+      ],
+      quiz: [
+        { q:"The network theory of psychopathology proposes that symptoms...", a:["Causally influence one another rather than reflecting a single latent disease","Are random noise","Always share one genetic cause","Cannot be measured"], correct:0,
+          why:"Disorders are modelled as systems of mutually reinforcing symptoms, not indicators of one hidden entity." }
+      ]
+    },
+    {
+      code: "PHARM", name: "Psychopharmacology / neuropharmacology", domain: "neuro",
+      cards: [
+        { type:"debate", level:7, title:"The monoamine hypothesis is not enough",
+          body:"SSRIs raise serotonin within hours but lift mood over weeks, and the chemical-imbalance story is now widely seen as oversimplified. Neuroplasticity and network-level accounts have largely displaced it." },
+        { type:"theory", level:7, title:"Pharmacokinetics vs pharmacodynamics",
+          body:"What the body does to the drug (absorption, distribution, metabolism, excretion) versus what the drug does to the body (receptor action). Confusing the two underlies many dosing and interaction errors." },
+        { type:"frontier", level:8, title:"Psychedelics and the plasticity window",
+          body:"Psilocybin and ketamine may open transient windows of heightened plasticity that pair with psychotherapy. Disentangling drug effect, expectancy and context (set and setting) in blinded trials is the hard part." }
+      ],
+      quiz: [
+        { q:"The delayed therapeutic onset of SSRIs is evidence against...", a:["A simple acute serotonin-deficit explanation of depression","Any role for serotonin","Pharmacokinetic principles","The placebo effect"], correct:0,
+          why:"If low serotonin were the whole story, raising it acutely should help acutely, but it does not." }
+      ]
+    },
+    {
+      code: "QNT", name: "Quantitative psychology", domain: "method",
+      cards: [
+        { type:"debate", level:7, title:"Against the cult of p < .05",
+          body:"NHST conflates effect size, sample size and noise into one threshold and encourages dichotomous thinking. Estimation (effect sizes with intervals) and Bayesian alternatives are increasingly preferred." },
+        { type:"method", level:7, title:"Mediation needs more than three regressions",
+          body:"Baron and Kenny's stepwise approach is superseded by bootstrapped indirect effects, and even those cannot establish causal mediation without strong, often untestable assumptions about confounding." },
+        { type:"frontier", level:8, title:"Multiverse and specification-curve analysis",
+          body:"Rather than one analysis, report the distribution of results across all defensible analytic choices. It turns hidden researcher degrees of freedom into a visible, reportable object." }
+      ],
+      quiz: [
+        { q:"A specification-curve (multiverse) analysis is designed to reveal...", a:["How conclusions depend on the analytic choices made","The single correct model","The largest possible effect","Whether data are normal"], correct:0,
+          why:"It exposes the sensitivity of results to the garden of forking analytic paths." }
+      ]
+    },
+    {
+      code: "REH", name: "Rehabilitation psychology", domain: "clinical",
+      cards: [
+        { type:"theory", level:7, title:"The ICF model of functioning",
+          body:"The WHO framework locates disability in the interaction of body functions, activity, participation and contextual (environmental and personal) factors, shifting focus from impairment to participation and environment." },
+        { type:"debate", level:7, title:"Restitution vs compensation",
+          body:"Should rehabilitation restore lost function or build workarounds? Constraint-induced therapy pushes restitution; assistive technology pushes compensation. The evidence rarely settles it cleanly, so goals are negotiated." },
+        { type:"frontier", level:8, title:"Brain-computer interfaces for restoration",
+          body:"BCIs decode intention to drive prosthetics or communication in paralysis. The psychological frontier is embodiment, agency and the gap between laboratory performance and daily-life usability." }
+      ],
+      quiz: [
+        { q:"The ICF model's key shift is to define disability as...", a:["An interaction between the person and their environment","A purely medical impairment","An untreatable deficit","A psychiatric category"], correct:0,
+          why:"Function and disability emerge from person-context interaction, not impairment alone." }
+      ]
+    },
+    {
+      code: "SCH", name: "School psychology", domain: "applied",
+      cards: [
+        { type:"method", level:7, title:"Response to Intervention",
+          body:"RTI tiers support by need and uses progress data to decide who escalates, replacing the discredited IQ-achievement discrepancy model for identifying learning difficulties. Implementation fidelity is its Achilles heel." },
+        { type:"debate", level:7, title:"Assessment for labelling vs for support",
+          body:"Diagnostic categories unlock resources but can stigmatise and lower expectations. School psychology lives in this tension between gatekeeping and enabling, and the politics differ by jurisdiction." },
+        { type:"frontier", level:8, title:"Scaling social-emotional learning",
+          body:"SEL programmes show benefits in trials but fade or fail to scale without coaching and context fit. Implementation science, not new curricula, is where the gains now lie." }
+      ],
+      quiz: [
+        { q:"Response to Intervention replaced which discredited approach to identifying learning difficulties?", a:["The IQ-achievement discrepancy model","Curriculum-based measurement","Functional assessment","Peer nomination"], correct:0,
+          why:"RTI uses tiered support and progress monitoring instead of waiting for a discrepancy to appear." }
+      ]
+    },
+    {
+      code: "SOC", name: "Social psychology", domain: "social",
+      cards: [
+        { type:"debate", level:7, title:"The replication reckoning",
+          body:"Ego depletion, power posing, social priming and the Stanford Prison Experiment have all been seriously challenged. Social psychology became the test case for the whole replication movement, for better and worse." },
+        { type:"theory", level:7, title:"Dual-process models and their critics",
+          body:"System 1/System 2 framings (Kahneman) organise heuristics-and-biases work, but critics argue the two-system metaphor is underspecified and that single-process accounts often fit as well." },
+        { type:"frontier", level:8, title:"From bias lists to mechanism",
+          body:"Cataloguing dozens of biases produced little cumulative theory. The frontier reframes them as outputs of a few rational-under-constraints processes, seeking depth over taxonomy." }
+      ],
+      quiz: [
+        { q:"Why did social psychology become central to the replication crisis?", a:["Several of its signature, widely taught effects failed to replicate","It never used experiments","Its effects were all physiological","It avoided statistics"], correct:0,
+          why:"High-profile, textbook findings proving fragile made it the movement's emblematic field." }
+      ]
+    },
+    {
+      code: "SPT", name: "Sports psychology / sports psychiatry", domain: "applied",
+      cards: [
+        { type:"theory", level:7, title:"Beyond the inverted-U",
+          body:"The arousal-performance inverted-U is too simple; the Individual Zones of Optimal Functioning and catastrophe models capture that optimal arousal is person-specific and that anxiety can cause sudden, not gradual, collapse." },
+        { type:"study", level:7, title:"Choking under pressure",
+          body:"Explicit monitoring theory says pressure makes experts attend to automated skills and disrupt them, while distraction theory blames divided attention. Designing interventions depends on which mechanism dominates for a given skill." },
+        { type:"frontier", level:8, title:"Athlete mental health, finally on the agenda",
+          body:"Sports psychiatry now treats prevalence of depression, eating disorders and the effects of concussion and retirement transitions as core, not peripheral. Stigma and performance culture complicate help-seeking." }
+      ],
+      quiz: [
+        { q:"Explicit monitoring theory explains choking as...", a:["Pressure directing conscious attention onto automated skills","Insufficient arousal","Lack of talent","Random variation"], correct:0,
+          why:"Attending to a skill that runs best automatically disrupts its execution under pressure." }
+      ]
+    },
+    {
+      code: "SYS", name: "Systems neuroscience", domain: "neuro",
+      cards: [
+        { type:"theory", level:7, title:"Population coding and neural manifolds",
+          body:"Computation lives in patterns across populations, not single cells. Low-dimensional manifolds within high-dimensional activity capture the variables a circuit actually represents, the dominant analytic lens today." },
+        { type:"debate", level:8, title:"The measure-everything problem",
+          body:"Tools now record thousands of neurons, but more data does not automatically yield understanding. Whether large-scale recording delivers theory or just richer description is a genuine field-level debate." },
+        { type:"frontier", level:8, title:"Closing the loop with behaviour",
+          body:"Linking neural dynamics to naturalistic, freely-moving behaviour, rather than head-fixed trials, is the frontier. Markerless pose tracking and unsupervised behavioural segmentation are reshaping what counts as a dependent variable." }
+      ],
+      quiz: [
+        { q:"A 'neural manifold' refers to...", a:["A low-dimensional structure within high-dimensional population activity","A single neuron's tuning curve","An anatomical white-matter tract","A type of electrode"], correct:0,
+          why:"Population activity is often confined to a low-dimensional subspace that captures the relevant computational variables." }
+      ]
+    }
+  ]
+};
+
+</script>
+<script type="text/babel" data-presets="react">
+/* Cortex app — single-file React via CDN, transformed by Babel standalone. */
+const { useState, useEffect, useMemo, useRef, useCallback } = React;
+
+const DATA = window.CORTEX_DATA;
+const DISCIPLINES = DATA.disciplines;
+const DOMAINS = DATA.domains;
+
+const TYPE_META = {
+  theory:   { label: "Theory",    accent: "#8FA7FF" },
+  study:    { label: "Key study", accent: "#5BE0C9" },
+  debate:   { label: "Debate",    accent: "#E0A35B" },
+  method:   { label: "Method",    accent: "#B98FFF" },
+  frontier: { label: "Frontier",  accent: "#C9A227" }
+};
+
+const STORE_KEY = "cortex_state_v1";
+const defaultState = {
+  liked: {}, saved: {}, seen: {}, quiz: {}, level: "all", focus: null, proposal: {}
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return { ...defaultState };
+    return { ...defaultState, ...JSON.parse(raw) };
+  } catch (e) { return { ...defaultState }; }
+}
+function saveState(s) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+function buildCards() {
+  const out = [];
+  DISCIPLINES.forEach((d) => {
+    d.cards.forEach((c, i) => {
+      out.push({ id: d.code + "-" + i, disc: d, type: c.type, level: c.level, title: c.title, body: c.body });
+    });
+  });
+  return out;
+}
+const ALL_CARDS = buildCards();
+
+function hueColor(h, l = 60, s = 55) { return "hsl(" + h + " " + s + "% " + l + "%)"; }
+
+function Chip({ children, color }) {
+  return <span className="chip" style={{ color: color, borderColor: color }}>{children}</span>;
+}
+function LevelChip({ level }) {
+  const isPhd = level === 8;
+  return <Chip color={isPhd ? "#C9A227" : "#5BE0C9"}>{isPhd ? "L8 · PhD" : "L7 · MSc"}</Chip>;
+}
+
+function Card({ card, state, dispatch, showCheck }) {
+  const [open, setOpen] = useState(false);
+  const [picked, setPicked] = useState(null);
+  const tm = TYPE_META[card.type];
+  const dh = DOMAINS[card.disc.domain].hue;
+  const liked = !!state.liked[card.id];
+  const saved = !!state.saved[card.id];
+  const quizItem = card.disc.quiz && card.disc.quiz.length
+    ? card.disc.quiz[(parseInt(card.id.split("-").pop(), 10)) % card.disc.quiz.length]
+    : null;
+
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current; if (!el || !("IntersectionObserver" in window)) { dispatch({ t: "seen", id: card.id }); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting && en.intersectionRatio >= 0.5) { dispatch({ t: "seen", id: card.id }); io.disconnect(); }
+      });
+    }, { threshold: [0, 0.5, 1] });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [card.id]);
+
+  return (
+    <article ref={ref} className="card" style={{ "--dh": dh, "--accent": tm.accent }}>
+      <div className="card-rule" />
+      <header className="card-head">
+        <span className="callno">PSY·{card.disc.code} · {DOMAINS[card.disc.domain].label}</span>
+        <span className="type-eyebrow" style={{ color: tm.accent }}>{tm.label}</span>
+      </header>
+
+      <div className="card-disc" style={{ color: hueColor(dh, 72) }}>{card.disc.name}</div>
+      <h2 className="card-title">{card.title}</h2>
+      <p className="card-body">{card.body}</p>
+
+      {showCheck && quizItem && (
+        <div className="check">
+          {!open ? (
+            <button className="ghost" onClick={() => setOpen(true)}>Check yourself</button>
+          ) : (
+            <div className="quiz">
+              <p className="quiz-q">{quizItem.q}</p>
+              <div className="quiz-opts">
+                {quizItem.a.map((opt, i) => {
+                  let cls = "opt";
+                  if (picked !== null) {
+                    if (i === quizItem.correct) cls += " right";
+                    else if (i === picked) cls += " wrong";
+                  }
+                  return (
+                    <button key={i} className={cls} disabled={picked !== null}
+                      onClick={() => { setPicked(i); dispatch({ t: "quiz", id: card.disc.code, correct: i === quizItem.correct }); }}>
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+              {picked !== null && (
+                <p className="quiz-why">{picked === quizItem.correct ? "Correct. " : "Not quite. "}{quizItem.why}</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      <footer className="card-foot">
+        <div className="foot-left"><LevelChip level={card.level} /></div>
+        <div className="foot-actions">
+          <button className={"act" + (liked ? " on" : "")} onClick={() => dispatch({ t: "like", id: card.id })}>
+            {liked ? "✓ Got it" : "Got it"}
+          </button>
+          <button className={"act" + (saved ? " on" : "")} onClick={() => dispatch({ t: "save", id: card.id })}>
+            {saved ? "★ Saved" : "☆ Save"}
+          </button>
+        </div>
+      </footer>
+    </article>
+  );
+}
+
+function Feed({ cards, state, dispatch }) {
+  if (!cards.length) return <div className="empty">No cards match this filter. Clear the focus on the You tab.</div>;
+  return (
+    <div className="feed">
+      {cards.map((c) => <Card key={c.id} card={c} state={state} dispatch={dispatch} showCheck />)}
+      <div className="feed-end">
+        <p>End of this thread.</p>
+        <span>Switch focus or level on the You tab to surface different cards.</span>
+      </div>
+    </div>
+  );
+}
+
+function Browse({ state, dispatch, setTab }) {
+  const byDomain = {};
+  DISCIPLINES.forEach((d) => { (byDomain[d.domain] = byDomain[d.domain] || []).push(d); });
+  return (
+    <div className="browse">
+      <h1 className="page-title">The catalogue</h1>
+      <p className="page-sub">Forty areas, banded by domain. A full bar means you have seen every card.</p>
+      {Object.keys(DOMAINS).map((dom) => (
+        <section key={dom} className="dom-block">
+          <h3 className="dom-label" style={{ color: hueColor(DOMAINS[dom].hue, 70) }}>{DOMAINS[dom].label}</h3>
+          <div className="disc-grid">
+            {(byDomain[dom] || []).map((d) => {
+              const total = d.cards.length;
+              const seen = d.cards.reduce((n, _c, i) => n + (state.seen[d.code + "-" + i] ? 1 : 0), 0);
+              const pct = Math.round((seen / total) * 100);
+              return (
+                <button key={d.code} className="disc-card" style={{ "--dh": DOMAINS[dom].hue }}
+                  onClick={() => { dispatch({ t: "focus", code: d.code }); setTab("feed"); }}>
+                  <span className="disc-code">{d.code}</span>
+                  <span className="disc-name">{d.name}</span>
+                  <span className="bar"><i style={{ width: pct + "%" }} /></span>
+                  <span className="disc-meta">{seen}/{total} cards</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function Saved({ state, dispatch }) {
+  const cards = ALL_CARDS.filter((c) => state.saved[c.id]);
+  if (!cards.length) return <div className="empty">Nothing saved yet. Tap ☆ Save on any card.</div>;
+  return (
+    <div className="saved">
+      <h1 className="page-title">Saved cards</h1>
+      <p className="page-sub">{cards.length} card{cards.length === 1 ? "" : "s"} kept for revision.</p>
+      {cards.map((c) => <Card key={c.id} card={c} state={state} dispatch={dispatch} />)}
+    </div>
+  );
+}
+
+const PROPOSAL_FIELDS = [
+  { k: "title", label: "Working title", hint: "Concise, specific, signals the variables. Avoid 'A study of...'.", area: false },
+  { k: "problem", label: "Problem statement", hint: "What gap or tension in the literature justifies this work? Two or three sentences.", area: true },
+  { k: "question", label: "Research question(s)", hint: "Answerable, bounded. For a PhD, one primary question plus sub-questions.", area: true },
+  { k: "aims", label: "Aims and objectives", hint: "Aim is the overall purpose. Objectives are the concrete, measurable steps.", area: true },
+  { k: "gap", label: "Literature gap and contribution", hint: "What does the field get wrong or not know, and what will you add?", area: true },
+  { k: "theory", label: "Theoretical framework", hint: "The lens through which you interpret. Name it; do not leave it implicit.", area: true },
+  { k: "method", label: "Design and methodology", hint: "Paradigm, design, sampling, measures or materials, analysis plan. Justify each choice.", area: true },
+  { k: "ethics", label: "Ethics and reflexivity", hint: "Risks, consent, data protection, positionality. UK: name your committee and framework.", area: true },
+  { k: "timeline", label: "Timeline and feasibility", hint: "Phased plan against the funded duration. Flag the riskiest dependency.", area: true }
+];
+
+function Proposal({ state, dispatch }) {
+  const p = state.proposal || {};
+  const filled = PROPOSAL_FIELDS.filter((f) => (p[f.k] || "").trim().length > 0).length;
+
+  function exportProposal() {
+    let txt = "RESEARCH PROPOSAL — draft\n" + new Date().toLocaleString("en-GB") + "\n\n";
+    PROPOSAL_FIELDS.forEach((f) => { txt += f.label.toUpperCase() + "\n" + ((p[f.k] || "").trim() || "[to write]") + "\n\n"; });
+    const blob = new Blob([txt], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "research-proposal-draft.txt"; a.click();
+  }
+
+  return (
+    <div className="proposal">
+      <h1 className="page-title">Research proposal</h1>
+      <p className="page-sub">The artefact that separates taught study from a doctorate. {filled}/{PROPOSAL_FIELDS.length} sections drafted. Saved on this device as you type.</p>
+      <div className="prop-progress"><i style={{ width: Math.round(filled / PROPOSAL_FIELDS.length * 100) + "%" }} /></div>
+
+      {PROPOSAL_FIELDS.map((f) => (
+        <div key={f.k} className="field">
+          <label>{f.label}</label>
+          <span className="field-hint">{f.hint}</span>
+          {f.area
+            ? <textarea rows={3} value={p[f.k] || ""} onChange={(e) => dispatch({ t: "proposal", k: f.k, v: e.target.value })} />
+            : <input value={p[f.k] || ""} onChange={(e) => dispatch({ t: "proposal", k: f.k, v: e.target.value })} />}
+        </div>
+      ))}
+
+      <div className="prop-actions">
+        <button className="ghost" onClick={exportProposal}>Export as text</button>
+        <button className="ghost danger" onClick={() => { if (confirm("Clear the whole proposal draft?")) dispatch({ t: "proposal-clear" }); }}>Clear draft</button>
+      </div>
+    </div>
+  );
+}
+
+function You({ state, dispatch }) {
+  const seenCount = Object.keys(state.seen).length;
+  const likedCount = Object.keys(state.liked).length;
+  const savedCount = Object.keys(state.saved).length;
+
+  let qTot = 0, qRight = 0;
+  Object.values(state.quiz).forEach((r) => { qTot += r.total || 0; qRight += r.correct || 0; });
+  const acc = qTot ? Math.round((qRight / qTot) * 100) : null;
+
+  const ranked = DISCIPLINES.map((d) => {
+    const seen = d.cards.reduce((n, _c, i) => n + (state.seen[d.code + "-" + i] ? 1 : 0), 0);
+    return { d, ratio: seen / d.cards.length };
+  }).sort((a, b) => a.ratio - b.ratio).slice(0, 3);
+
+  function exportAll() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "cortex-progress.json"; a.click();
+  }
+  function importAll(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = () => { try { dispatch({ t: "replace", state: JSON.parse(r.result) }); } catch (err) { alert("Could not read that file."); } };
+    r.readAsText(file);
+  }
+
+  return (
+    <div className="you">
+      <h1 className="page-title">You</h1>
+      <div className="stats">
+        <div className="stat"><b>{seenCount}</b><span>cards seen</span></div>
+        <div className="stat"><b>{likedCount}</b><span>understood</span></div>
+        <div className="stat"><b>{savedCount}</b><span>saved</span></div>
+        <div className="stat"><b>{acc === null ? "–" : acc + "%"}</b><span>quiz accuracy</span></div>
+      </div>
+
+      <section className="panel">
+        <h3>Level</h3>
+        <p className="panel-sub">L7 is taught mastery, L8 is research frontier. Filter the feed to one or see both.</p>
+        <div className="seg">
+          {[["all", "Both"], ["7", "L7 only"], ["8", "L8 only"]].map(([v, lab]) => (
+            <button key={v} className={"seg-btn" + (String(state.level) === v ? " on" : "")} onClick={() => dispatch({ t: "level", v })}>{lab}</button>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel">
+        <h3>Suggested next</h3>
+        <p className="panel-sub">Your three least-explored areas. Breadth here means knowing the shape of fields adjacent to your own.</p>
+        <div className="path">
+          {ranked.map(({ d, ratio }) => (
+            <button key={d.code} className="path-row" onClick={() => dispatch({ t: "focus", code: d.code })}>
+              <span className="path-code">{d.code}</span>
+              <span className="path-name">{d.name}</span>
+              <span className="path-pct">{Math.round(ratio * 100)}%</span>
+            </button>
+          ))}
+        </div>
+        {state.focus && <p className="focus-note">Focus set on {DISCIPLINES.find(d => d.code === state.focus)?.name}. Open the Feed tab. <button className="link" onClick={() => dispatch({ t: "focus", code: null })}>Clear focus</button></p>}
+      </section>
+
+      <section className="panel">
+        <h3>Backup</h3>
+        <p className="panel-sub">Progress lives only on this device. Export to keep it.</p>
+        <div className="prop-actions">
+          <button className="ghost" onClick={exportAll}>Export progress</button>
+          <label className="ghost file-btn">Import<input type="file" accept="application/json" onChange={importAll} hidden /></label>
+          <button className="ghost danger" onClick={() => { if (confirm("Reset all progress on this device?")) dispatch({ t: "reset" }); }}>Reset</button>
+        </div>
+      </section>
+
+      <p className="colophon">Cortex · postgraduate psychology · built from the Bella's Brain pattern, retuned for L7/L8.</p>
+    </div>
+  );
+}
+
+function App() {
+  const [state, setState] = useState(loadState);
+  const [tab, setTab] = useState("feed");
+  const feedRef = useRef(null);
+
+  useEffect(() => { saveState(state); }, [state]);
+
+  const dispatch = useCallback((a) => {
+    setState((s) => {
+      const n = { ...s };
+      switch (a.t) {
+        case "seen": n.seen = { ...s.seen, [a.id]: 1 }; break;
+        case "like": n.liked = { ...s.liked }; if (n.liked[a.id]) delete n.liked[a.id]; else n.liked[a.id] = 1; break;
+        case "save": n.saved = { ...s.saved }; if (n.saved[a.id]) delete n.saved[a.id]; else n.saved[a.id] = 1; break;
+        case "quiz": {
+          const cur = s.quiz[a.id] || { total: 0, correct: 0 };
+          n.quiz = { ...s.quiz, [a.id]: { total: cur.total + 1, correct: cur.correct + (a.correct ? 1 : 0) } };
+          break;
+        }
+        case "level": n.level = a.v; break;
+        case "focus": n.focus = a.code; break;
+        case "proposal": n.proposal = { ...s.proposal, [a.k]: a.v }; break;
+        case "proposal-clear": n.proposal = {}; break;
+        case "reset": return { ...defaultState };
+        case "replace": return { ...defaultState, ...a.state };
+        default: break;
+      }
+      return n;
+    });
+  }, []);
+
+  const feedCards = useMemo(() => {
+    let cards = ALL_CARDS;
+    if (state.focus) cards = cards.filter((c) => c.disc.code === state.focus);
+    if (state.level === "7") cards = cards.filter((c) => c.level === 7);
+    else if (state.level === "8") cards = cards.filter((c) => c.level === 8);
+    return cards;
+  }, [state.focus, state.level]);
+
+  useEffect(() => { if (feedRef.current) feedRef.current.scrollTop = 0; }, [state.focus, state.level, tab]);
+
+  const focusName = state.focus ? DISCIPLINES.find(d => d.code === state.focus)?.name : null;
+
+  return (
+    <div className="app">
+      <div className="topbar">
+        <div className="brand"><span className="mark">C</span><span className="word">Cortex</span></div>
+        <div className="ctx">
+          {tab === "feed" && (focusName
+            ? <button className="pill" onClick={() => dispatch({ t: "focus", code: null })}>{focusName} ✕</button>
+            : <span className="pill ghosted">All areas</span>)}
+        </div>
+      </div>
+
+      <main ref={feedRef} className={"scroll" + (tab === "feed" ? " is-feed" : "")}>
+        {tab === "feed" && <Feed cards={feedCards} state={state} dispatch={dispatch} />}
+        {tab === "browse" && <Browse state={state} dispatch={dispatch} setTab={setTab} />}
+        {tab === "saved" && <Saved state={state} dispatch={dispatch} />}
+        {tab === "proposal" && <Proposal state={state} dispatch={dispatch} />}
+        {tab === "you" && <You state={state} dispatch={dispatch} />}
+      </main>
+
+      <nav className="tabbar">
+        {[["feed", "Feed", "▤"], ["browse", "Browse", "▦"], ["saved", "Saved", "★"], ["proposal", "Proposal", "✎"], ["you", "You", "◍"]].map(([k, lab, ic]) => (
+          <button key={k} className={"tab" + (tab === k ? " on" : "")} onClick={() => setTab(k)}>
+            <span className="tab-ic">{ic}</span><span className="tab-lab">{lab}</span>
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})});}
+</script>
+</body>
+</html>
