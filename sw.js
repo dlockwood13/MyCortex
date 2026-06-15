@@ -1,6 +1,6 @@
 /* Cortex service worker — offline app shell.
    Bump CACHE when you change index.html to push an update. */
-const CACHE = "cortex-v1";
+const CACHE = "cortex-v2";
 const ASSETS = [
   "./",
   "./index.html",
