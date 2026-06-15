@@ -159,6 +159,82 @@ button{font-family:inherit;cursor:pointer}
 .tab.on{color:var(--gold)}
 
 @media(min-width:560px){.disc-grid{grid-template-columns:1fr 1fr 1fr}}
+
+/* ===== social layer ===== */
+.stories{display:flex;gap:14px;overflow-x:auto;padding:12px 16px;border-bottom:1px solid var(--line);
+  background:rgba(14,16,32,.6);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.stories::-webkit-scrollbar{display:none}
+.story{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:6px;flex:0 0 auto;width:60px;padding:0}
+.story-av{display:grid;place-items:center;width:54px;height:54px;border-radius:50%;
+  font-family:var(--mono);font-size:13px;font-weight:600;border:2px solid var(--line);
+  background:var(--surface2);color:var(--muted)}
+.story-av.all{background:linear-gradient(145deg,#3a2150,#0E1020);border-color:var(--gold);color:var(--gold);font-size:18px}
+.story.on .story-av{outline:2px solid var(--gold);outline-offset:2px}
+.story-lab{font-size:10.5px;color:var(--muted);max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.story.on .story-lab{color:var(--text)}
+
+.post-head{display:flex;align-items:center;gap:11px;margin:0 0 16px}
+.avatar{display:grid;place-items:center;border-radius:50%;border:1.5px solid;font-family:var(--mono);font-weight:600;flex:0 0 auto}
+.acct{display:flex;flex-direction:column;min-width:0;flex:1}
+.acct-name{font-family:var(--serif);font-weight:600;font-size:15.5px;line-height:1.2;display:flex;align-items:center;gap:5px}
+.acct-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
+.verified{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;
+  background:var(--teal);color:var(--ink);font-size:9px;font-weight:700;flex:0 0 auto}
+.post-tag{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  border:1px solid;border-radius:999px;padding:4px 9px;flex:0 0 auto}
+
+.heart-burst{position:absolute;inset:0;display:grid;place-items:center;font-size:130px;color:var(--bad);
+  pointer-events:none;z-index:3;animation:burst .7s ease-out forwards;text-shadow:0 6px 30px rgba(224,109,122,.5)}
+@keyframes burst{0%{transform:scale(.3);opacity:0}30%{transform:scale(1);opacity:.92}100%{transform:scale(1.18);opacity:0}}
+
+.actions{display:flex;align-items:center;gap:6px;margin-top:22px;flex-wrap:wrap}
+.a-btn{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--line);
+  color:var(--muted);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:500;transition:all .14s}
+.a-btn:hover{color:var(--text);border-color:var(--muted)}
+.a-btn.on{color:var(--gold);border-color:rgba(201,162,39,.5);background:rgba(201,162,39,.10)}
+.a-ic{font-size:15px;line-height:1}
+.a-spacer{flex:1}
+.toast{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:var(--surface2);
+  border:1px solid var(--line);color:var(--text);font-size:12.5px;padding:8px 14px;border-radius:999px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:4}
+
+/* browse card tweak */
+.disc-card-top{display:flex;align-items:center;gap:8px}
+
+/* discipline detail */
+.disc-detail{padding:18px 20px 44px}
+.back{background:none;border:none;color:var(--muted);font-size:14px;padding:4px 0;margin-bottom:8px}
+.back:hover{color:var(--gold)}
+.dd-head{display:flex;align-items:center;gap:15px;margin-bottom:14px}
+.dd-id{min-width:0}
+.dd-name{font-family:var(--serif);font-weight:600;font-size:23px;line-height:1.15;margin:0;display:flex;align-items:center;gap:7px}
+.dd-handle{font-family:var(--mono);font-size:12px;color:var(--gold);display:block;margin-top:3px}
+.dd-meta{font-family:var(--mono);font-size:11px;color:var(--muted);display:block;margin-top:4px}
+.dd-bar{margin:0 0 16px}
+.dd-actions{display:flex;gap:10px;margin-bottom:28px}
+.follow{flex:1;background:var(--gold);color:var(--ink);border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:600}
+.follow:hover{filter:brightness(1.08)}
+.syl-h{font-family:var(--mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.syl-overview{font-family:var(--serif);font-size:17px;line-height:1.45;color:#dcd8cc;margin:0 0 18px;font-style:italic}
+.mod{display:flex;gap:13px;padding:15px 0;border-top:1px solid var(--line)}
+.mod-n{flex:0 0 auto;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;
+  border:1px solid;font-family:var(--mono);font-size:13px;font-weight:600}
+.mod-body{min-width:0}
+.mod-t{font-family:var(--serif);font-weight:600;font-size:16px;line-height:1.25;margin-bottom:5px}
+.mod-o{font-size:14px;line-height:1.5;color:#cfcabe}
+.mod-k{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:7px;line-height:1.4}
+.dd-posts{margin-top:32px}
+.disc-detail .card{scroll-snap-align:none;min-height:auto;justify-content:flex-start;padding:20px;
+  margin:0 0 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.disc-detail .card .card-rule{display:none}
+
+/* profile header (You) */
+.profile{display:flex;align-items:center;gap:15px;margin:4px 0 22px}
+.pf-avatar{display:grid;place-items:center;width:62px;height:62px;border-radius:50%;
+  background:linear-gradient(145deg,#3a2150,#0E1020);border:2px solid var(--gold);color:var(--gold);
+  font-family:var(--serif);font-size:19px;font-weight:600;flex:0 0 auto}
+.pf-name{font-family:var(--serif);font-weight:600;font-size:24px;margin:0}
+.pf-handle{font-family:var(--mono);font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -787,6 +863,294 @@ window.CORTEX_DATA = {
 };
 
 </script>
+<script>
+/* Cortex — full postgraduate syllabi, keyed by discipline code.
+   Each: overview + ordered modules { t: topic, o: learning outcome, k: key thinkers / works }.
+   L7 modules build the taught core; later modules reach the L8 research frontier.
+   UK English. No em dashes. */
+window.CORTEX_SYLLABI = {
+  ABN: { overview:"From defining disorder to dismantling the categories that define it.", modules:[
+    { t:"What makes behaviour 'abnormal'?", o:"Weigh deviance, distress, dysfunction and danger against the harmful-dysfunction account and locate yourself between statistical and normative definitions.", k:"Wakefield; Boorse; Szasz" },
+    { t:"Classification systems and their seams", o:"Read DSM-5-TR and ICD-11 critically: how thresholds are set, why comorbidity is the rule not the exception, and what categories hide.", k:"APA; WHO; Kendler" },
+    { t:"Models of aetiology", o:"Apply diathesis-stress and biopsychosocial reasoning, and explain why transdiagnostic processes cut across diagnoses.", k:"Zubin & Spring; Engel; Harvey & Watkins" },
+    { t:"Latent structure of disorder", o:"Use taxometrics to test categorical versus dimensional structure and situate RDoC and HiTOP as rival ontologies.", k:"Meehl; Ruscio; Insel; Kotov" },
+    { t:"Culture, power and the critique of medicalisation", o:"Analyse stigma, the social construction of diagnosis and cross-cultural variation in what counts as disorder.", k:"Foucault; Rosenhan; Watters" }
+  ]},
+  BEH: { overview:"How experience reshapes behaviour, from reflexes to computational accounts of choice.", modules:[
+    { t:"Conditioning foundations", o:"Distinguish classical from operant learning and the empirical laws each rests on.", k:"Pavlov; Thorndike; Skinner" },
+    { t:"Associative learning as prediction", o:"Derive blocking and overshadowing from the Rescorla-Wagner rule and the idea that learning tracks surprise.", k:"Rescorla & Wagner; Kamin" },
+    { t:"Reward, dopamine and reinforcement learning", o:"Map reward-prediction-error theory onto dopaminergic signalling and temporal-difference algorithms.", k:"Schultz; Montague; Sutton & Barto" },
+    { t:"Habits versus goals", o:"Dissociate model-free and model-based control using devaluation and the two-step task.", k:"Dickinson; Daw; Balleine" },
+    { t:"Computational psychiatry of compulsion", o:"Explain addiction and OCD as imbalances in arbitration between control systems.", k:"Robbins; Voon; Huys" }
+  ]},
+  CLN: { overview:"Turning presenting problems into testable formulations and defensible treatment choices.", modules:[
+    { t:"Formulation over diagnosis", o:"Build a 5 Ps formulation and argue the idiographic case against static labels.", k:"Johnstone & Dallos; Persons" },
+    { t:"The major therapy models", o:"Compare cognitive, third-wave and psychodynamic accounts of change.", k:"Beck; Hayes; Fonagy" },
+    { t:"Common factors and the dodo bird", o:"Evaluate whether alliance and expectancy, not technique, drive outcome.", k:"Rosenzweig; Wampold; Bordin" },
+    { t:"Measuring change", o:"Use routine outcome monitoring and reliable-change methods to track and pre-empt deterioration.", k:"Lambert; Barkham (CORE)" },
+    { t:"Precision mental health", o:"Critique treatment-selection models and personalised advantage indices, and why they fail to replicate.", k:"DeRubeis; Cohen & DeRubeis" }
+  ]},
+  COG: { overview:"The mind as an information-processing and prediction machine, and the limits of that metaphor.", modules:[
+    { t:"The cognitive revolution", o:"Trace the shift from behaviourism to information processing and its founding methods.", k:"Broadbent; Neisser; Miller" },
+    { t:"Memory systems", o:"Separate working from long-term memory and explain consolidation and the multicomponent model.", k:"Baddeley & Hitch; Tulving; Squire" },
+    { t:"Attention and cognitive control", o:"Model selection, capacity limits and executive control of action.", k:"Posner; Treisman; Norman & Shallice" },
+    { t:"Predictive processing", o:"Cast perception, action and attention as hierarchical prediction-error minimisation.", k:"Friston; Clark; Rao & Ballard" },
+    { t:"Does cognition need representations?", o:"Assess embodied, enactive and ecological challenges against the representation-hungry rebuttal.", k:"Varela; Gibson; Clark" }
+  ]},
+  COM: { overview:"Moving the unit of analysis above the individual, to settings, systems and social justice.", modules:[
+    { t:"Founding commitments", o:"Explain prevention, empowerment and social justice as the field's organising values.", k:"Rappaport; Sarason" },
+    { t:"Ecological levels of analysis", o:"Apply nested-systems and ecological principles to read distress as person-in-context.", k:"Bronfenbrenner; Kelly" },
+    { t:"Sense of community and empowerment", o:"Operationalise psychological sense of community and multilevel empowerment.", k:"McMillan & Chavis; Zimmerman" },
+    { t:"Participatory and action methods", o:"Design participatory action research that shares power with communities, and weigh its trade-offs.", k:"Lewin; Fals-Borda" },
+    { t:"Intervening at the setting level", o:"Use multilevel models to separate individual from neighbourhood variance and target settings.", k:"Shinn; Trickett" }
+  ]},
+  CMP: { overview:"Building and interrogating mathematical models of nervous systems.", modules:[
+    { t:"Single-neuron models", o:"Move from Hodgkin-Huxley conductances to integrate-and-fire abstractions and justify the level of detail.", k:"Hodgkin & Huxley; Lapicque" },
+    { t:"Marr's three levels", o:"Separate computational, algorithmic and implementational questions and avoid conflating them.", k:"Marr; Poggio" },
+    { t:"Network dynamics", o:"Analyse attractor networks and balanced excitation-inhibition as substrates of memory and variability.", k:"Hopfield; Amit; van Vreeswijk & Sompolinsky" },
+    { t:"Learning rules", o:"Compare Hebbian, error-driven and predictive-coding learning and their biological plausibility.", k:"Hebb; Rumelhart; Whittington & Bogacz" },
+    { t:"Deep networks as brain models; FAIR data", o:"Judge when trained networks are explanations rather than curve fits, and manage reproducible neuroinformatics.", k:"Yamins & DiCarlo; Kriegeskorte" }
+  ]},
+  CNS: { overview:"A relationship-centred tradition learning to evidence itself without losing its soul.", modules:[
+    { t:"Humanistic and phenomenological roots", o:"Trace the discipline's origins in client-centred and existential thought.", k:"Rogers; Maslow; Yalom" },
+    { t:"The alliance as mechanism", o:"Use the bond-tasks-goals model and weigh the causal direction of alliance and outcome.", k:"Bordin; Norcross; Gelso" },
+    { t:"Pluralism and integration", o:"Match approach to client across modalities rather than defend a single school.", k:"Cooper & McLeod; Wampold" },
+    { t:"Reflexivity and practitioner identity", o:"Apply the scientist-practitioner-reflective stance and examine positionality.", k:"Woolfe; Orlans & Van Scoyoc" },
+    { t:"Practice-based evidence", o:"Build feedback-informed practice and critique brief self-report measures.", k:"Lambert; Barkham" }
+  ]},
+  CMP2: { overview:"Reading other minds across the tree of life without over- or under-claiming.", modules:[
+    { t:"Anthropomorphism and Morgan's Canon", o:"Apply parsimony to behaviour while avoiding the opposite error of anthropodenial.", k:"Romanes; Morgan; de Waal" },
+    { t:"Learning and problem-solving across species", o:"Compare insight, latent learning and ecological intelligence.", k:"Köhler; Tolman; Shettleworth" },
+    { t:"Social cognition and theory of mind", o:"Evaluate whether re-caching and gaze-following reflect mental-state attribution or behaviour-reading.", k:"Clayton & Dickinson; Call & Tomasello" },
+    { t:"Communication and animal culture", o:"Assess signalling and socially transmitted traditions as windows on cognition.", k:"von Frisch; Whiten; Seyfarth & Cheney" },
+    { t:"The comparative method's confounds", o:"Use phylogenetic comparative methods to stop treating species as independent data points.", k:"Felsenstein; MacLean" }
+  ]},
+  CUL: { overview:"Whether psychology's findings travel, and how to test it honestly.", modules:[
+    { t:"Emic and etic stances", o:"Distinguish cultural from cross-cultural psychology and spot the imposed-etic trap.", k:"Pike; Berry; Shweder" },
+    { t:"Dimensions of culture and their critics", o:"Use and critique value dimensions and independent versus interdependent self-construal.", k:"Hofstede; Triandis; Markus & Kitayama" },
+    { t:"The WEIRD problem", o:"Explain why standard samples are outliers and what that does to generalisability.", k:"Henrich, Heine & Norenzayan" },
+    { t:"Measurement invariance", o:"Test configural, metric and scalar invariance before comparing means across groups.", k:"Vandenberg & Lance; van de Vijver" },
+    { t:"Indigenous and decolonising psychologies", o:"Build constructs from within cultures and confront whose knowledge counts.", k:"Kim & Berry; L. T. Smith" }
+  ]},
+  DEV: { overview:"How minds and brains change over time, and how to study change without fooling yourself.", modules:[
+    { t:"Stage versus continuity", o:"Contrast constructivist stages with overlapping-waves accounts of cognitive change.", k:"Piaget; Vygotsky; Siegler" },
+    { t:"Attachment and socio-emotional development", o:"Explain attachment patterns and their developmental sequelae.", k:"Bowlby; Ainsworth; Sroufe" },
+    { t:"Core knowledge and conceptual change", o:"Evaluate what infants know early and how concepts are restructured.", k:"Spelke; Carey; Gopnik" },
+    { t:"Developing brains and sensitive periods", o:"Distinguish true critical windows from cumulative exposure and explain adolescent plasticity.", k:"Hensch; Knudsen; Blakemore" },
+    { t:"Longitudinal design and replication", o:"Read the marshmallow re-analysis as a lesson in long-run predictive claims.", k:"Watts et al.; Nigg" }
+  ]},
+  EDU: { overview:"What the science of learning says, and why classrooms so often ignore it.", modules:[
+    { t:"Theories of learning and motivation", o:"Apply socio-cultural, mindset and self-determination accounts to instruction.", k:"Vygotsky; Dweck; Deci & Ryan" },
+    { t:"Cognitive load and instructional design", o:"Manage intrinsic, extraneous and germane load, and the expertise-reversal effect.", k:"Sweller; Mayer; Kalyuga" },
+    { t:"Durable learning", o:"Deploy retrieval practice, spacing and interleaving despite their feeling harder.", k:"Roediger & Karpicke; Bjork" },
+    { t:"Assessment and self-regulation", o:"Use formative feedback to build self-regulated learners.", k:"Black & Wiliam; Zimmerman" },
+    { t:"Educational neuroscience and neuromyths", o:"Separate translatable findings from learning-styles-style myths.", k:"Howard-Jones; Goswami" }
+  ]},
+  ENG: { overview:"Designing systems around the capabilities and failures of real human operators.", modules:[
+    { t:"Signal detection and vigilance", o:"Separate sensitivity from criterion and tune alarms for the cost of misses versus false alarms.", k:"Green & Swets; Mackworth" },
+    { t:"Attention, workload and situation awareness", o:"Model multiple-resource limits and the loss of awareness in complex tasks.", k:"Wickens; Endsley" },
+    { t:"Human error and system safety", o:"Apply Swiss-cheese and resilience models rather than blaming the sharp end.", k:"Reason; Rasmussen; Hollnagel" },
+    { t:"Automation and the human in the loop", o:"Explain the ironies of automation and calibrate trust to reliability.", k:"Bainbridge; Parasuraman & Riley; Lee & See" },
+    { t:"Measuring workload and evaluating designs", o:"Triangulate subjective, behavioural and physiological workload measures.", k:"Hart & Staveland (NASA-TLX)" }
+  ]},
+  ENV: { overview:"People in places: how settings shape, restore and are damaged by behaviour.", modules:[
+    { t:"Place, identity and person-environment fit", o:"Use place attachment and identity to explain behaviour in settings.", k:"Lewin; Proshansky; Gifford" },
+    { t:"Restorative environments", o:"Apply Attention Restoration and Stress Reduction theories to green-space research.", k:"Kaplan & Kaplan; Ulrich" },
+    { t:"Pro-environmental behaviour", o:"Explain the attitude-behaviour gap and shift intervention toward choice architecture.", k:"Stern (VBN); Ajzen; Thaler & Sunstein" },
+    { t:"Stress, crowding and environmental risk", o:"Link environmental stressors to health and performance.", k:"Evans; Baum" },
+    { t:"Climate psychology", o:"Validate climate anxiety as a construct and design effective communication and adaptation.", k:"Clayton; Hornsey & Fielding" }
+  ]},
+  EVO: { overview:"Treating the mind as a product of selection, and testing that idea rigorously.", modules:[
+    { t:"Adaptation and the EEA", o:"Frame cognition as domain-specific adaptations shaped by ancestral pressures.", k:"Darwin; Tooby & Cosmides" },
+    { t:"Mating, kinship and cooperation", o:"Apply parental investment, inclusive fitness and reciprocity to social behaviour.", k:"Trivers; Hamilton; Buss" },
+    { t:"Adaptationism and its critics", o:"Distinguish adaptations from spandrels and exaptations and resist just-so stories.", k:"Gould & Lewontin" },
+    { t:"Modularity debates", o:"Weigh massive-modularity claims against domain-general alternatives.", k:"Cosmides & Tooby; Fodor; Buller" },
+    { t:"Testing evolutionary hypotheses", o:"Derive a priori predictions and integrate gene-culture coevolution.", k:"Richerson & Boyd; Laland" }
+  ]},
+  EXP: { overview:"The craft of causal inference in psychology, and the crisis that reformed it.", modules:[
+    { t:"The logic of experiments", o:"Reason about causality and the validity types every design trades against.", k:"Campbell & Stanley; Shadish, Cook & Campbell" },
+    { t:"Design and confounds", o:"Choose between, within and factorial designs and control nuisance variation.", k:"Fisher; Keppel" },
+    { t:"Measurement and artefacts", o:"Guard against demand characteristics and weak manipulation checks.", k:"Orne; Rosenthal" },
+    { t:"The replication crisis", o:"Explain p-hacking, low power and publication bias behind low replication rates.", k:"Open Science Collaboration; Ioannidis; Simmons" },
+    { t:"Open science practices", o:"Use preregistration, registered reports and many-analysts designs to constrain forking paths.", k:"Nosek; Silberzahn" }
+  ]},
+  FOR: { overview:"Applying psychology where it meets the law, with risk and memory at the centre.", modules:[
+    { t:"Theories of offending", o:"Compare developmental and general theories of antisocial behaviour.", k:"Andrews & Bonta; Moffitt" },
+    { t:"Risk assessment", o:"Contrast actuarial tools with structured professional judgement on accuracy and usefulness.", k:"Hanson (Static-99R); Douglas (HCR-20)" },
+    { t:"Rehabilitation models", o:"Debate whether the Good Lives Model adds value over well-implemented Risk-Need-Responsivity.", k:"Andrews & Bonta; Ward" },
+    { t:"Eyewitness memory and interviewing", o:"Explain misinformation effects and apply the cognitive interview.", k:"Loftus; Fisher & Geiselman" },
+    { t:"Psychology in the courtroom", o:"Communicate probabilistic risk without it being misheard as certainty.", k:"Wells; Faigman" }
+  ]},
+  HLT: { overview:"Why people do and do not protect their health, and how to help them.", modules:[
+    { t:"Models of health behaviour", o:"Apply and critique social-cognition models of intention and action.", k:"Ajzen (TPB); Rosenstock (HBM); Michie (COM-B)" },
+    { t:"The biopsychosocial model", o:"Move from slogan to specified mediation pathways across levels.", k:"Engel; Suls & Rothman" },
+    { t:"Stress and coping", o:"Use transactional models to link appraisal, coping and physiology.", k:"Lazarus & Folkman; Sapolsky" },
+    { t:"Closing the intention-behaviour gap", o:"Deploy implementation intentions and a behaviour-change-technique taxonomy.", k:"Gollwitzer; Michie" },
+    { t:"Digital, EMA and N-of-1 designs", o:"Design micro-randomised trials and just-in-time adaptive interventions.", k:"Klasnja; Nahum-Shani" }
+  ]},
+  IO: { overview:"Evidence on selecting, motivating and organising people at work.", modules:[
+    { t:"Selection and validity", o:"Rank predictors of performance and follow the range-restriction controversy.", k:"Schmidt & Hunter; Sackett et al." },
+    { t:"Motivation and engagement", o:"Apply goal-setting and Job Demands-Resources, and see why JD-R is hard to falsify.", k:"Locke & Latham; Bakker & Demerouti" },
+    { t:"Leadership and teams", o:"Evaluate leadership theories and the conditions for team effectiveness.", k:"Bass; Hackman" },
+    { t:"Work design and wellbeing", o:"Use job-characteristics and demand-control models to design healthy work.", k:"Hackman & Oldham; Karasek" },
+    { t:"Algorithmic hiring and fairness", o:"Validate machine-learning selection for adverse impact and defend it legally.", k:"Raghavan; Barocas & Selbst" }
+  ]},
+  MOL: { overview:"The molecular machinery that lets synapses store experience.", modules:[
+    { t:"Neuron and synapse", o:"Explain membranes, channels and chemical transmission.", k:"Kandel; Katz" },
+    { t:"Synaptic plasticity", o:"Describe NMDA-dependent LTP and LTD as Hebbian mechanisms.", k:"Bliss & Lomo; Malenka" },
+    { t:"Molecular memory", o:"Trace signalling cascades and gene expression from synapse to long-term storage.", k:"Kandel (CREB); Silva" },
+    { t:"Causal tools", o:"Use optogenetics and chemogenetics to test circuit logic, noting artificial-drive caveats.", k:"Deisseroth; Boyden" },
+    { t:"The engram", o:"Evaluate evidence that tagged ensembles are necessary and sufficient for memory.", k:"Tonegawa; Josselyn" }
+  ]},
+  ANA: { overview:"The brain's structure as both a map of functions and a web of connections.", modules:[
+    { t:"Gross organisation and development", o:"Locate major structures and outline neurodevelopment.", k:"neural tube; cortical layering" },
+    { t:"Cytoarchitecture and segregation", o:"Use Brodmann-style parcellation while recognising its limits.", k:"Brodmann; Vogt" },
+    { t:"Connectivity and the connectome", o:"Read the brain as white-matter networks, not just areas.", k:"Sporns; Catani" },
+    { t:"The lesion method", o:"Infer necessity from deficit using classic cases.", k:"Scoville & Milner (H.M.)" },
+    { t:"Diffusion imaging and tractography", o:"Avoid treating reconstructed tracts as ground-truth anatomy.", k:"Jones; Maier-Hein" }
+  ]},
+  NET: { overview:"When neuroscience meets agency, responsibility and the privacy of the mind.", modules:[
+    { t:"Scope of neuroethics", o:"Map the ethics of neuroscience and the neuroscience of ethics.", k:"Roskies; Farah" },
+    { t:"Free will and responsibility", o:"Assess what readiness-potential and neuroprediction studies do and do not show about desert.", k:"Libet; Greene & Cohen; Aharoni" },
+    { t:"Enhancement and cognitive liberty", o:"Weigh authenticity, coercion and fairness in pharmacological and stimulation enhancement.", k:"Sandel; Bostrom; Sententia" },
+    { t:"Mental privacy and neurorights", o:"Evaluate brain-data privacy, neuromarketing and proposed neurorights.", k:"Ienca & Andorno" },
+    { t:"Consciousness and consent", o:"Confront covert awareness in unresponsive patients for diagnosis and end-of-life decisions.", k:"Owen; Fins" }
+  ]},
+  GEN: { overview:"How genetic variation shapes behaviour, and why simple stories keep failing.", modules:[
+    { t:"Heritability and twin designs", o:"Interpret heritability and the laws of behaviour genetics correctly.", k:"Plomin; Turkheimer" },
+    { t:"From candidate genes to GWAS", o:"Explain why candidate-gene findings collapsed and GWAS replaced them.", k:"Caspi & Moffitt; Visscher" },
+    { t:"Polygenicity and missing heritability", o:"Reconcile twin estimates with variants explained, via omnigenic models.", k:"Yang; Boyle et al." },
+    { t:"Polygenic scores", o:"Judge predictive use and the poor cross-ancestry portability that risks inequity.", k:"Martin; Torkamani" },
+    { t:"Gene-environment interplay and epigenetics", o:"Model interaction and correlation between genes and environments.", k:"Rutter; Meaney" }
+  ]},
+  IMG: { overview:"Seeing the living brain at work, and the inferential traps that come with it.", modules:[
+    { t:"Methods and signals", o:"Compare what fMRI, EEG/MEG and PET actually measure and their resolutions.", k:"Ogawa; Logothetis" },
+    { t:"Design and preprocessing", o:"Build sound designs and understand the preprocessing pipeline's choices.", k:"Friston (SPM); Poldrack" },
+    { t:"Inference and reverse inference", o:"Avoid concluding mental states from activation and correct for multiple comparisons.", k:"Poldrack; Bennett (dead salmon); Eklund" },
+    { t:"Connectivity and decoding", o:"Apply multivariate pattern analysis and representational similarity analysis.", k:"Haxby; Kriegeskorte" },
+    { t:"Reliability, power and consortia", o:"Explain why brain-wide association studies need thousands of participants.", k:"Marek et al." }
+  ]},
+  NEU: { overview:"Inferring function from damage, the original cognitive neuroscience.", modules:[
+    { t:"Localisation through lesions", o:"Use deficits to make causal claims about regional function.", k:"Broca; Wernicke; Geschwind" },
+    { t:"Classic syndromes", o:"Recognise aphasia, neglect, amnesia and agnosia and what they dissociate.", k:"Luria; Damasio" },
+    { t:"Famous cases and their limits", o:"Read Phineas Gage critically as a single, embellished case.", k:"Harlow; Macmillan" },
+    { t:"Network neurology", o:"Reframe focal-seeming conditions as connectome diseases that spread along networks.", k:"Seeley; Raj" },
+    { t:"Clinical-anatomical correlation", o:"Apply voxel-based lesion-symptom mapping in practice.", k:"Bates; Dronkers" }
+  ]},
+  PHY: { overview:"How neurons generate, transmit and encode signals.", modules:[
+    { t:"The action potential", o:"Derive spiking from voltage-gated conductances.", k:"Hodgkin & Huxley" },
+    { t:"Dendritic and synaptic computation", o:"Explain integration, cable properties and dendritic nonlinearities.", k:"Rall; Magee" },
+    { t:"Sensory coding and receptive fields", o:"Use the simple/complex-cell hierarchy as the basis of sensory processing.", k:"Hubel & Wiesel; Barlow" },
+    { t:"Neural codes", o:"Debate rate, temporal and population coding and their analytic consequences.", k:"Shadlen & Newsome; Rieke" },
+    { t:"Oscillations and synchrony", o:"Assess whether gamma synchrony binds features or merely reflects computation.", k:"Singer; Buzsaki" }
+  ]},
+  NPS: { overview:"Mapping mind to brain through the careful study of impairment.", modules:[
+    { t:"The logic of dissociation", o:"Use single and double dissociations to argue functional independence.", k:"Teuber; Shallice" },
+    { t:"Cognitive domains", o:"Assess memory, language, attention and executive function systematically.", k:"Baddeley; Stuss" },
+    { t:"Assessment and psychometrics", o:"Choose valid measures and apply single-case statistics correctly.", k:"Lezak; Crawford & Howell" },
+    { t:"Cognitive reserve", o:"Explain why pathology and symptoms decouple.", k:"Stern" },
+    { t:"Neurorehabilitation", o:"Design evidence-based recovery and compensation strategies.", k:"Robertson; Wilson" }
+  ]},
+  SUR: { overview:"The mind on the operating table: mapping, modulating and the ethics of both.", modules:[
+    { t:"Functional mapping", o:"Use awake stimulation to spare eloquent cortex, the source of the homunculus.", k:"Penfield; Ojemann" },
+    { t:"History and ethics of psychosurgery", o:"Learn the cautionary arc from leucotomy to modern restraint.", k:"Moniz; Freeman" },
+    { t:"Deep brain stimulation", o:"Treat DBS as a reversible lesion across movement and psychiatric disorders.", k:"Benabid; Mayberg" },
+    { t:"Epilepsy surgery and cognition", o:"Weigh seizure control against cognitive outcome.", k:"Engel; Helmstaedter" },
+    { t:"Closed-loop neuromodulation and agency", o:"Confront where the self ends and an adaptive device begins.", k:"Widge; Goering" }
+  ]},
+  NUT: { overview:"Diet and the brain, separating plausible mechanism from popular overclaim.", modules:[
+    { t:"Nutrients and brain function", o:"Link glucose, fatty acids and micronutrients to neural processes.", k:"Gomez-Pinilla" },
+    { t:"The gut-brain axis", o:"Explain vagal, immune and microbial-metabolite signalling and its evidential limits.", k:"Cryan & Dinan; Mayer" },
+    { t:"Diet and mental health", o:"Read dietary RCTs critically for blinding and expectancy.", k:"Jacka (SMILES); Marx" },
+    { t:"Causal inference in nutrition", o:"Use Mendelian randomisation to probe causality past confounded epidemiology.", k:"Davey Smith; Ioannidis" },
+    { t:"Appetite and feeding", o:"Describe the neuroendocrine control of energy balance.", k:"Schwartz; Berthoud" }
+  ]},
+  PER: { overview:"How sensation becomes the perceived world, mostly by inference.", modules:[
+    { t:"Psychophysics", o:"Relate physical stimuli to sensation and measure thresholds.", k:"Fechner; Stevens; Green & Swets" },
+    { t:"Organisation and ecological perception", o:"Contrast Gestalt grouping with direct, ecological accounts.", k:"Wertheimer; Gibson" },
+    { t:"Bayesian perception", o:"Treat percepts as priors combined with likelihoods, and illusions as optimal inference.", k:"Helmholtz; Knill & Richards" },
+    { t:"Multisensory integration", o:"Explain automatic fusion of modalities using the McGurk effect and optimal cue combination.", k:"McGurk; Ernst & Banks" },
+    { t:"Perceptual learning", o:"Account for the specificity of learning and the goal of transfer.", k:"Karni & Sagi; Watanabe" }
+  ]},
+  PRS: { overview:"What is stable about a person, and how stability and change coexist.", modules:[
+    { t:"Trait structure", o:"Compare Big Five and HEXACO and see how structure depends on the starting items.", k:"Goldberg; Costa & McCrae; Ashton & Lee" },
+    { t:"The person-situation debate", o:"Resolve consistency through aggregation and if-then behavioural signatures.", k:"Mischel; Epstein; Fleeson" },
+    { t:"Biological bases", o:"Link traits to temperament and neurobiological systems.", k:"Eysenck; Gray (RST); DeYoung" },
+    { t:"Personality as a dynamic system", o:"Recast traits as density distributions of states and interacting networks.", k:"Fleeson; Cramer" },
+    { t:"Stability and change across life", o:"Explain rank-order stability and the maturity principle.", k:"Roberts" }
+  ]},
+  PLG: { overview:"How the mind and brain build meaning from sound and text in real time.", modules:[
+    { t:"Language architecture", o:"Outline the stages of comprehension and production.", k:"Levelt; Garrett" },
+    { t:"Sentence processing", o:"Use garden paths and the visual-world paradigm to test modular versus interactive parsing.", k:"Frazier; Tanenhaus" },
+    { t:"Meaning and prediction", o:"Interpret the N400 as evidence that comprehension is predictive.", k:"Kutas & Hillyard; Federmeier" },
+    { t:"Neural bases of language", o:"Apply dual-stream and dynamic models of the language network.", k:"Hickok & Poeppel; Hagoort; Friederici" },
+    { t:"LLMs as cognitive models", o:"Judge whether transformer surprisal makes them theories of comprehension.", k:"Elman; Linzen; Schrimpf" }
+  ]},
+  PSM: { overview:"Making psychological measurement defensible.", modules:[
+    { t:"Reliability and classical test theory", o:"Estimate and interpret reliability and measurement error.", k:"Spearman; Cronbach; Lord & Novick" },
+    { t:"Validity as argument", o:"Build a unified, evidential case for score interpretation and use.", k:"Cronbach & Meehl; Messick; Borsboom" },
+    { t:"Factor analysis and latent variables", o:"Model latent structure with EFA, CFA and SEM.", k:"Thurstone; Joreskog" },
+    { t:"Item response theory", o:"Use IRT for item-level precision and test equating.", k:"Rasch; Lord; Embretson" },
+    { t:"The reliability paradox", o:"Explain why robust experimental tasks make poor individual-differences measures.", k:"Hedge et al.; Rouder & Haaf" }
+  ]},
+  PPT: { overview:"The structure and mechanisms of mental disorder, beyond the diagnostic manual.", modules:[
+    { t:"Descriptive psychopathology", o:"Use phenomenology to describe symptoms precisely.", k:"Jaspers; Sims" },
+    { t:"Classification and comorbidity", o:"Diagnose the manuals' comorbidity and heterogeneity problems.", k:"DSM/ICD; Kessler" },
+    { t:"The p-factor", o:"Evaluate a general psychopathology factor as cause, artefact or severity.", k:"Caspi & Moffitt; Lahey" },
+    { t:"Network theory", o:"Model disorders as self-sustaining systems of mutually reinforcing symptoms.", k:"Borsboom & Cramer; Fried" },
+    { t:"Dimensional alternatives", o:"Compare HiTOP and RDoC as data-driven and mechanistic ontologies.", k:"Kotov; Insel" }
+  ]},
+  PHARM: { overview:"What drugs do to the brain and what that reveals about disorder.", modules:[
+    { t:"Pharmacokinetics and pharmacodynamics", o:"Separate what the body does to a drug from what the drug does to the body.", k:"ADME; receptor theory" },
+    { t:"Neurotransmitter systems", o:"Map major systems and the drugs that act on them.", k:"Cooper, Bloom & Roth" },
+    { t:"Antidepressants and the monoamine debate", o:"Explain why delayed onset undermines a simple chemical-imbalance story.", k:"Schildkraut; Moncrieff; Harmer" },
+    { t:"Antipsychotics, anxiolytics, dependence", o:"Relate dopamine and GABA pharmacology to efficacy, tolerance and dependence.", k:"Carlsson; Howes" },
+    { t:"Psychedelics and plasticity windows", o:"Disentangle drug, expectancy and context in plasticity-based therapies.", k:"Carhart-Harris; Krystal" }
+  ]},
+  QNT: { overview:"The statistical reasoning that makes or breaks psychological claims.", modules:[
+    { t:"Estimation versus testing", o:"Prefer effect sizes and intervals over dichotomous significance.", k:"Cohen; Cumming" },
+    { t:"Power and error rates", o:"Connect low power and analytic flexibility to unreliable literatures.", k:"Button et al.; Gelman" },
+    { t:"Regression, mediation, moderation", o:"Move beyond Baron-Kenny to bootstrapped and causal mediation, with its assumptions.", k:"Hayes; Imai et al." },
+    { t:"Multilevel and structural models", o:"Fit hierarchical and SEM models to nested and latent data.", k:"Raudenbush & Bryk; Kline" },
+    { t:"Bayesian and multiverse methods", o:"Report distributions of results across defensible analytic choices.", k:"Kruschke; Steegen; Simonsohn" }
+  ]},
+  REH: { overview:"Restoring function and participation after injury or illness.", modules:[
+    { t:"Models of disability", o:"Contrast medical, social and ICF accounts of disability.", k:"WHO ICF; Oliver" },
+    { t:"Adjustment to disability", o:"Explain psychological adaptation to chronic illness and acquired impairment.", k:"B. Wright; Livneh" },
+    { t:"Restitution versus compensation", o:"Weigh constraint-induced therapy against assistive workarounds.", k:"Taub; Robertson" },
+    { t:"Assistive technology and BCIs", o:"Assess brain-computer interfaces for communication and movement, and embodiment.", k:"Wolpaw; Hochberg" },
+    { t:"Participation and reintegration", o:"Measure participation and identity, not just impairment.", k:"Dijkers" }
+  ]},
+  SCH: { overview:"Psychology in the service of learning, inclusion and prevention in schools.", modules:[
+    { t:"Roles and consultation", o:"Work as a scientist-practitioner through systems and consultation.", k:"Ysseldyke; Gutkin" },
+    { t:"From discrepancy to RTI/MTSS", o:"Replace the IQ-achievement model with tiered, data-based support.", k:"Fuchs & Fuchs" },
+    { t:"Learning difficulties and SEN", o:"Identify and support specific difficulties such as dyslexia.", k:"Fletcher; Snowling" },
+    { t:"Social-emotional learning", o:"Evaluate SEL programmes and why benefits fade without fidelity.", k:"Durlak; CASEL" },
+    { t:"Implementation and scaling", o:"Apply implementation science to make programmes stick.", k:"Forman; Fixsen" }
+  ]},
+  SOC: { overview:"How people think about, influence and relate to one another, after the reckoning.", modules:[
+    { t:"Attitudes, attribution, influence", o:"Apply the foundational findings on conformity, dissonance and attribution.", k:"Festinger; Asch; Heider" },
+    { t:"Self and intergroup relations", o:"Use social identity theory to explain group behaviour and bias.", k:"Tajfel & Turner; Markus" },
+    { t:"Dual-process social cognition", o:"Apply and critique System 1/System 2 framings of judgement.", k:"Kahneman; Fiske & Taylor; Devine" },
+    { t:"The replication reckoning", o:"Reassess ego depletion, power posing and priming after failed replications.", k:"Open Science Collaboration" },
+    { t:"From bias lists to mechanism", o:"Reframe biases as outputs of rational-under-constraints processes.", k:"Gigerenzer; Lieder & Griffiths" }
+  ]},
+  SPT: { overview:"Mind and performance in sport, and the athlete behind the performance.", modules:[
+    { t:"Arousal, anxiety and performance", o:"Move beyond the inverted-U to individual zones and catastrophe models.", k:"Hanin (IZOF); Hardy" },
+    { t:"Skill and choking under pressure", o:"Contrast explicit-monitoring and distraction accounts of choking.", k:"Beilock; Masters" },
+    { t:"Motivation and talent development", o:"Apply self-determination theory and read grit claims critically.", k:"Deci & Ryan; Duckworth" },
+    { t:"Teams and leadership", o:"Explain cohesion and group dynamics in performance settings.", k:"Carron" },
+    { t:"Athlete mental health", o:"Treat depression, eating disorders, concussion and transitions as core.", k:"Reardon (IOC consensus)" }
+  ]},
+  SYS: { overview:"How populations of neurons compute behaviour, and whether more data means more understanding.", modules:[
+    { t:"Circuits and sensory maps", o:"Relate columnar organisation and maps to function.", k:"Mountcastle; Hubel & Wiesel" },
+    { t:"Population coding and manifolds", o:"Find the low-dimensional structure within high-dimensional activity.", k:"Churchland; Cunningham & Yu" },
+    { t:"Decision-making and value", o:"Model evidence accumulation and value-based choice.", k:"Gold & Shadlen; Glimcher" },
+    { t:"Large-scale recording and the theory gap", o:"Debate whether thousands of neurons deliver theory or richer description.", k:"Stevenson & Kording; Jun et al." },
+    { t:"Neural dynamics and natural behaviour", o:"Link circuits to freely moving behaviour with markerless tracking.", k:"Datta; Mathis (DeepLabCut)" }
+  ]}
+};
+</script>
 <script type="text/babel" data-presets="react">
 /* Cortex app — single-file React via CDN, transformed by Babel standalone. */
 const { useState, useEffect, useMemo, useRef, useCallback } = React;
@@ -794,6 +1158,10 @@ const { useState, useEffect, useMemo, useRef, useCallback } = React;
 const DATA = window.CORTEX_DATA;
 const DISCIPLINES = DATA.disciplines;
 const DOMAINS = DATA.domains;
+const SYLLABI = window.CORTEX_SYLLABI || {};
+DISCIPLINES.forEach((d) => { d.syllabus = SYLLABI[d.code] || null; });
+function discHandle(d){ return "@" + d.code.toLowerCase().replace(/[^a-z0-9]/g, "") + ".psy"; }
+function monogram(d){ var m = d.code.replace(/[^A-Z]/g, ""); return (m || d.code).slice(0,2).toUpperCase(); }
 
 const TYPE_META = {
   theory:   { label: "Theory",    accent: "#8FA7FF" },
@@ -805,7 +1173,7 @@ const TYPE_META = {
 
 const STORE_KEY = "cortex_state_v1";
 const defaultState = {
-  liked: {}, saved: {}, seen: {}, quiz: {}, level: "all", focus: null, proposal: {}
+  liked: {}, saved: {}, seen: {}, quiz: {}, level: "all", focus: null, domain: null, proposal: {}
 };
 
 function loadState() {
@@ -840,9 +1208,23 @@ function LevelChip({ level }) {
   return <Chip color={isPhd ? "#C9A227" : "#5BE0C9"}>{isPhd ? "L8 · PhD" : "L7 · MSc"}</Chip>;
 }
 
+function Avatar({ d, size }) {
+  const dh = DOMAINS[d.domain].hue;
+  const s = size || 42;
+  return (
+    <span className="avatar" style={{ width: s, height: s, fontSize: Math.round(s * 0.33),
+      background: "linear-gradient(145deg, hsl(" + dh + " 55% 32%), hsl(" + dh + " 60% 15%))",
+      borderColor: "hsl(" + dh + " 55% 55% / .6)", color: "hsl(" + dh + " 72% 80%)" }}>
+      {monogram(d)}
+    </span>
+  );
+}
+
 function Card({ card, state, dispatch, showCheck }) {
   const [open, setOpen] = useState(false);
   const [picked, setPicked] = useState(null);
+  const [burst, setBurst] = useState(false);
+  const [msg, setMsg] = useState(null);
   const tm = TYPE_META[card.type];
   const dh = DOMAINS[card.disc.domain].hue;
   const liked = !!state.liked[card.id];
@@ -863,59 +1245,78 @@ function Card({ card, state, dispatch, showCheck }) {
     return () => io.disconnect();
   }, [card.id]);
 
+  function flash(t) { setMsg(t); setTimeout(() => setMsg(null), 1600); }
+  function onDouble() {
+    if (!state.liked[card.id]) dispatch({ t: "like", id: card.id });
+    setBurst(true); setTimeout(() => setBurst(false), 700);
+  }
+  function share() {
+    const txt = card.title + "\n\n" + card.body + "\n\n— Cortex · " + card.disc.name + " " + discHandle(card.disc);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(() => flash("Copied to clipboard")).catch(() => flash("Could not copy"));
+    } else { flash("Clipboard unavailable"); }
+  }
+
   return (
-    <article ref={ref} className="card" style={{ "--dh": dh, "--accent": tm.accent }}>
+    <article ref={ref} className="card" style={{ "--dh": dh, "--accent": tm.accent }} onDoubleClick={onDouble}>
       <div className="card-rule" />
-      <header className="card-head">
-        <span className="callno">PSY·{card.disc.code} · {DOMAINS[card.disc.domain].label}</span>
-        <span className="type-eyebrow" style={{ color: tm.accent }}>{tm.label}</span>
+      <header className="post-head">
+        <Avatar d={card.disc} />
+        <div className="acct">
+          <span className="acct-name">{card.disc.name}<span className="verified" title="Curated field">✓</span></span>
+          <span className="acct-sub">{discHandle(card.disc)} · {DOMAINS[card.disc.domain].label}</span>
+        </div>
+        <span className="post-tag" style={{ color: tm.accent, borderColor: tm.accent }}>{tm.label}</span>
       </header>
 
-      <div className="card-disc" style={{ color: hueColor(dh, 72) }}>{card.disc.name}</div>
       <h2 className="card-title">{card.title}</h2>
       <p className="card-body">{card.body}</p>
 
-      {showCheck && quizItem && (
-        <div className="check">
-          {!open ? (
-            <button className="ghost" onClick={() => setOpen(true)}>Check yourself</button>
-          ) : (
-            <div className="quiz">
-              <p className="quiz-q">{quizItem.q}</p>
-              <div className="quiz-opts">
-                {quizItem.a.map((opt, i) => {
-                  let cls = "opt";
-                  if (picked !== null) {
-                    if (i === quizItem.correct) cls += " right";
-                    else if (i === picked) cls += " wrong";
-                  }
-                  return (
-                    <button key={i} className={cls} disabled={picked !== null}
-                      onClick={() => { setPicked(i); dispatch({ t: "quiz", id: card.disc.code, correct: i === quizItem.correct }); }}>
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
-              {picked !== null && (
-                <p className="quiz-why">{picked === quizItem.correct ? "Correct. " : "Not quite. "}{quizItem.why}</p>
-              )}
-            </div>
+      {burst && <span className="heart-burst">♥</span>}
+
+      {showCheck && quizItem && open && (
+        <div className="quiz">
+          <p className="quiz-q">Seminar prompt · {quizItem.q}</p>
+          <div className="quiz-opts">
+            {quizItem.a.map((opt, i) => {
+              let cls = "opt";
+              if (picked !== null) {
+                if (i === quizItem.correct) cls += " right";
+                else if (i === picked) cls += " wrong";
+              }
+              return (
+                <button key={i} className={cls} disabled={picked !== null}
+                  onClick={() => { setPicked(i); dispatch({ t: "quiz", id: card.disc.code, correct: i === quizItem.correct }); }}>
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+          {picked !== null && (
+            <p className="quiz-why">{picked === quizItem.correct ? "Correct. " : "Not quite. "}{quizItem.why}</p>
           )}
         </div>
       )}
 
-      <footer className="card-foot">
-        <div className="foot-left"><LevelChip level={card.level} /></div>
-        <div className="foot-actions">
-          <button className={"act" + (liked ? " on" : "")} onClick={() => dispatch({ t: "like", id: card.id })}>
-            {liked ? "✓ Got it" : "Got it"}
+      <footer className="actions">
+        <button className={"a-btn" + (liked ? " on" : "")} onClick={() => dispatch({ t: "like", id: card.id })}>
+          <span className="a-ic">{liked ? "♥" : "♡"}</span><span className="a-lab">{liked ? "Understood" : "Got it"}</span>
+        </button>
+        {showCheck && quizItem && (
+          <button className={"a-btn" + (open ? " on" : "")} onClick={() => setOpen((o) => !o)}>
+            <span className="a-ic">✎</span><span className="a-lab">Discuss</span>
           </button>
-          <button className={"act" + (saved ? " on" : "")} onClick={() => dispatch({ t: "save", id: card.id })}>
-            {saved ? "★ Saved" : "☆ Save"}
-          </button>
-        </div>
+        )}
+        <button className={"a-btn" + (saved ? " on" : "")} onClick={() => dispatch({ t: "save", id: card.id })}>
+          <span className="a-ic">{saved ? "★" : "☆"}</span><span className="a-lab">{saved ? "Saved" : "Save"}</span>
+        </button>
+        <button className="a-btn" onClick={share}>
+          <span className="a-ic">↗</span><span className="a-lab">Share</span>
+        </button>
+        <span className="a-spacer" />
+        <LevelChip level={card.level} />
       </footer>
+      {msg && <div className="toast">{msg}</div>}
     </article>
   );
 }
@@ -934,12 +1335,17 @@ function Feed({ cards, state, dispatch }) {
 }
 
 function Browse({ state, dispatch, setTab }) {
+  const [sel, setSel] = useState(null);
+  if (sel) {
+    const d = DISCIPLINES.find((x) => x.code === sel);
+    if (d) return <Discipline d={d} state={state} dispatch={dispatch} setTab={setTab} onBack={() => setSel(null)} />;
+  }
   const byDomain = {};
   DISCIPLINES.forEach((d) => { (byDomain[d.domain] = byDomain[d.domain] || []).push(d); });
   return (
     <div className="browse">
-      <h1 className="page-title">The catalogue</h1>
-      <p className="page-sub">Forty areas, banded by domain. A full bar means you have seen every card.</p>
+      <h1 className="page-title">Explore</h1>
+      <p className="page-sub">Forty fields, each with a full syllabus. Open one to read its curriculum, then follow it into your feed.</p>
       {Object.keys(DOMAINS).map((dom) => (
         <section key={dom} className="dom-block">
           <h3 className="dom-label" style={{ color: hueColor(DOMAINS[dom].hue, 70) }}>{DOMAINS[dom].label}</h3>
@@ -950,17 +1356,68 @@ function Browse({ state, dispatch, setTab }) {
               const pct = Math.round((seen / total) * 100);
               return (
                 <button key={d.code} className="disc-card" style={{ "--dh": DOMAINS[dom].hue }}
-                  onClick={() => { dispatch({ t: "focus", code: d.code }); setTab("feed"); }}>
-                  <span className="disc-code">{d.code}</span>
+                  onClick={() => setSel(d.code)}>
+                  <span className="disc-card-top"><Avatar d={d} size={30} /><span className="disc-code">{d.code}</span></span>
                   <span className="disc-name">{d.name}</span>
                   <span className="bar"><i style={{ width: pct + "%" }} /></span>
-                  <span className="disc-meta">{seen}/{total} cards</span>
+                  <span className="disc-meta">{d.syllabus ? d.syllabus.modules.length + " modules · " : ""}{seen}/{total} posts</span>
                 </button>
               );
             })}
           </div>
         </section>
       ))}
+    </div>
+  );
+}
+
+function Discipline({ d, state, dispatch, setTab, onBack }) {
+  const dh = DOMAINS[d.domain].hue;
+  const total = d.cards.length;
+  const seen = d.cards.reduce((n, _c, i) => n + (state.seen[d.code + "-" + i] ? 1 : 0), 0);
+  const pct = Math.round((seen / total) * 100);
+  const cards = d.cards.map((c, i) => ({ id: d.code + "-" + i, disc: d, type: c.type, level: c.level, title: c.title, body: c.body }));
+  const syl = d.syllabus;
+  function focusFeed() { dispatch({ t: "focus", code: d.code }); setTab("feed"); }
+  function saveAll() { d.cards.forEach((_c, i) => { const id = d.code + "-" + i; if (!state.saved[id]) dispatch({ t: "save", id: id }); }); }
+  return (
+    <div className="disc-detail" style={{ "--dh": dh }}>
+      <button className="back" onClick={onBack}>‹ Explore</button>
+      <header className="dd-head">
+        <Avatar d={d} size={66} />
+        <div className="dd-id">
+          <h1 className="dd-name">{d.name}<span className="verified" title="Curated field">✓</span></h1>
+          <span className="dd-handle">{discHandle(d)}</span>
+          <span className="dd-meta">{DOMAINS[d.domain].label} · {total} posts · {pct}% read</span>
+        </div>
+      </header>
+      <div className="bar dd-bar"><i style={{ width: pct + "%", background: "hsl(" + dh + " 60% 62%)" }} /></div>
+      <div className="dd-actions">
+        <button className="follow" onClick={focusFeed}>Focus in feed</button>
+        <button className="ghost" onClick={saveAll}>Save all</button>
+      </div>
+
+      {syl && (
+        <section className="syl">
+          <h3 className="syl-h">Syllabus</h3>
+          <p className="syl-overview">{syl.overview}</p>
+          {syl.modules.map((m, i) => (
+            <div key={i} className="mod">
+              <span className="mod-n" style={{ color: "hsl(" + dh + " 65% 70%)", borderColor: "hsl(" + dh + " 55% 50% / .5)" }}>{i + 1}</span>
+              <div className="mod-body">
+                <div className="mod-t">{m.t}</div>
+                <div className="mod-o">{m.o}</div>
+                <div className="mod-k">Key thinkers · {m.k}</div>
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      <section className="dd-posts">
+        <h3 className="syl-h">Posts in this field</h3>
+        {cards.map((c) => <Card key={c.id} card={c} state={state} dispatch={dispatch} showCheck />)}
+      </section>
     </div>
   );
 }
@@ -1055,7 +1512,13 @@ function You({ state, dispatch }) {
 
   return (
     <div className="you">
-      <h1 className="page-title">You</h1>
+      <div className="profile">
+        <span className="pf-avatar">You</span>
+        <div>
+          <h1 className="pf-name">Your study</h1>
+          <span className="pf-handle">@you · postgraduate psychology</span>
+        </div>
+      </div>
       <div className="stats">
         <div className="stat"><b>{seenCount}</b><span>cards seen</span></div>
         <div className="stat"><b>{likedCount}</b><span>understood</span></div>
@@ -1103,6 +1566,27 @@ function You({ state, dispatch }) {
   );
 }
 
+function Stories({ state, dispatch, setTab }) {
+  const doms = Object.keys(DOMAINS);
+  const active = state.domain;
+  return (
+    <div className="stories">
+      <button className={"story" + (!active && !state.focus ? " on" : "")} onClick={() => dispatch({ t: "domain", code: null })}>
+        <span className="story-av all">★</span><span className="story-lab">For you</span>
+      </button>
+      {doms.map((dom) => {
+        const dh = DOMAINS[dom].hue; const on = active === dom;
+        return (
+          <button key={dom} className={"story" + (on ? " on" : "")} onClick={() => dispatch({ t: "domain", code: on ? null : dom })}>
+            <span className="story-av" style={{ background: "linear-gradient(145deg, hsl(" + dh + " 55% 34%), hsl(" + dh + " 60% 16%))", borderColor: "hsl(" + dh + " 60% 60%)", color: "hsl(" + dh + " 72% 82%)" }}>{DOMAINS[dom].label.slice(0, 2)}</span>
+            <span className="story-lab">{DOMAINS[dom].label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function App() {
   const [state, setState] = useState(loadState);
   const [tab, setTab] = useState("feed");
@@ -1123,7 +1607,8 @@ function App() {
           break;
         }
         case "level": n.level = a.v; break;
-        case "focus": n.focus = a.code; break;
+        case "focus": n.focus = a.code; n.domain = null; break;
+        case "domain": n.domain = a.code; n.focus = null; break;
         case "proposal": n.proposal = { ...s.proposal, [a.k]: a.v }; break;
         case "proposal-clear": n.proposal = {}; break;
         case "reset": return { ...defaultState };
@@ -1137,12 +1622,13 @@ function App() {
   const feedCards = useMemo(() => {
     let cards = ALL_CARDS;
     if (state.focus) cards = cards.filter((c) => c.disc.code === state.focus);
+    else if (state.domain) cards = cards.filter((c) => c.disc.domain === state.domain);
     if (state.level === "7") cards = cards.filter((c) => c.level === 7);
     else if (state.level === "8") cards = cards.filter((c) => c.level === 8);
     return cards;
-  }, [state.focus, state.level]);
+  }, [state.focus, state.domain, state.level]);
 
-  useEffect(() => { if (feedRef.current) feedRef.current.scrollTop = 0; }, [state.focus, state.level, tab]);
+  useEffect(() => { if (feedRef.current) feedRef.current.scrollTop = 0; }, [state.focus, state.domain, state.level, tab]);
 
   const focusName = state.focus ? DISCIPLINES.find(d => d.code === state.focus)?.name : null;
 
@@ -1153,10 +1639,11 @@ function App() {
         <div className="ctx">
           {tab === "feed" && (focusName
             ? <button className="pill" onClick={() => dispatch({ t: "focus", code: null })}>{focusName} ✕</button>
-            : <span className="pill ghosted">All areas</span>)}
+            : (state.domain ? <button className="pill" onClick={() => dispatch({ t: "domain", code: null })}>{DOMAINS[state.domain].label} ✕</button> : <span className="pill ghosted">For you</span>))}
         </div>
       </div>
 
+      {tab === "feed" && <Stories state={state} dispatch={dispatch} setTab={setTab} />}
       <main ref={feedRef} className={"scroll" + (tab === "feed" ? " is-feed" : "")}>
         {tab === "feed" && <Feed cards={feedCards} state={state} dispatch={dispatch} />}
         {tab === "browse" && <Browse state={state} dispatch={dispatch} setTab={setTab} />}
