@@ -282,6 +282,17 @@ button{font-family:inherit;cursor:pointer}
   padding:13px 15px;font-size:13.5px;line-height:1.55;color:#cfeee7;margin:0 0 18px}
 .callout.warn{background:rgba(224,109,122,.10);border-color:rgba(224,109,122,.35);color:#f3d2d6}
 .callout strong{color:var(--text);font-weight:700}
+
+/* ===== laws ===== */
+.laws{padding:24px 20px 40px}
+.law-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:9px}
+.law-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+.law-name{font-family:var(--serif);font-weight:600;font-size:16px;line-height:1.2}
+.law-ev{flex:0 0 auto;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+  border:1px solid;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.law-desc{font-size:14px;line-height:1.5;color:#dcd8cc;margin:0 0 10px}
+.law-use{font-size:12px;color:var(--muted);line-height:1.4}
+.law-use span{font-family:var(--mono);font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--teal);margin-right:6px}
 </style>
 </head>
 <body>
@@ -1353,6 +1364,37 @@ window.CORTEX_FIGURES = [
 "profile":"<h3>Context</h3><p>A Polish-born master mariner who became one of the great English novelists.</p><h3>Key works and ideas</h3><ul><li><strong>Heart of Darkness.</strong> The horror lurking within the civilised self.</li><li><strong>Lord Jim.</strong> A single act of cowardice and a lifetime's attempt at atonement.</li><li><strong>The Secret Agent.</strong> A prescient anatomy of terrorism and surveillance.</li></ul><h3>Forensic relevance</h3><p>The Secret Agent is a modern study of terrorism and policing; Lord Jim probes guilt and moral collapse.</p>" }
 ];
 </script>
+<script>
+/* Cortex — Cognitive, behavioural & organisational laws and biases. */
+window.CORTEX_LAWS = [
+ { cat:"Time & Planning", name:"Parkinson's Law", desc:"Work expands to fill the time available for its completion.", evidence:"Observational", use:"Time-boxing, sprint planning, deadlines" },
+ { cat:"Time & Planning", name:"Hofstadter's Law", desc:"Tasks take longer than expected, even when delays are anticipated.", evidence:"Moderate", use:"Forecasting, contingency planning" },
+ { cat:"Time & Planning", name:"Planning Fallacy", desc:"Systematic underestimation of time, cost, and risk.", evidence:"Strong", use:"Programme estimation, delivery planning" },
+ { cat:"Measurement", name:"Goodhart's Law", desc:"When a measure becomes a target, it ceases to be a good measure.", evidence:"Strong (systems theory)", use:"KPI design, performance metrics" },
+ { cat:"Knowledge & Communication", name:"Curse of Knowledge", desc:"Experts struggle to recall what it is like not to know something.", evidence:"Strong", use:"Training, documentation, stakeholder comms" },
+ { cat:"Knowledge & Confidence", name:"Illusion of Explanatory Depth", desc:"Perceived understanding exceeds actual understanding.", evidence:"Strong", use:"Policy clarity, requirements definition" },
+ { cat:"Judgement", name:"Confirmation Bias", desc:"Tendency to seek information that supports existing beliefs.", evidence:"Very strong", use:"Investigations, analysis, reviews" },
+ { cat:"Judgement", name:"Anchoring Effect", desc:"Initial information disproportionately influences judgement.", evidence:"Strong", use:"Risk scoring, early assessments" },
+ { cat:"Judgement", name:"Outcome Bias", desc:"Decisions judged by outcomes rather than decision quality.", evidence:"Strong", use:"Incident and case reviews" },
+ { cat:"Judgement", name:"Hindsight Bias", desc:"Events appear predictable after they occur.", evidence:"Strong", use:"Retrospective analysis" },
+ { cat:"Self-Perception", name:"Egocentric Bias", desc:"Overestimating one's own contribution or importance.", evidence:"Strong", use:"Team dynamics, collaboration" },
+ { cat:"Self-Perception", name:"Self-Serving Bias", desc:"Success attributed internally; failure externally.", evidence:"Strong", use:"Performance reflection" },
+ { cat:"Social Attribution", name:"Fundamental Attribution Error", desc:"Over-attributing behaviour to personality rather than context.", evidence:"Strong", use:"Behaviour assessment, feedback" },
+ { cat:"Social Attribution", name:"Actor-Observer Bias", desc:"Situational explanations for self, dispositional for others.", evidence:"Strong", use:"Conflict resolution" },
+ { cat:"Motivation", name:"Loss Aversion", desc:"Losses feel more powerful than equivalent gains.", evidence:"Very strong", use:"Change management" },
+ { cat:"Motivation", name:"Status Quo Bias", desc:"Preference for maintaining current conditions.", evidence:"Strong", use:"Transformation resistance" },
+ { cat:"Behaviour", name:"Operant Conditioning (Skinner)", desc:"Behaviour shaped through reinforcement or punishment.", evidence:"Very strong", use:"Habit design, incentives" },
+ { cat:"Behaviour", name:"Effort Justification", desc:"Greater effort increases perceived value of outcomes.", evidence:"Strong", use:"Burnout awareness" },
+ { cat:"Confidence & Skill", name:"Dunning-Kruger Effect", desc:"Low competence associated with overconfidence.", evidence:"Moderate-strong", use:"Capability assessment" },
+ { cat:"Systems", name:"Peter Principle", desc:"Promotion beyond level of competence.", evidence:"Observational", use:"Organisational design" },
+ { cat:"Systems", name:"Normalisation of Deviance", desc:"Unsafe practices become accepted as normal over time.", evidence:"Strong applied evidence", use:"Patient safety, governance" },
+ { cat:"Systems", name:"Swiss Cheese Model (Reason)", desc:"Harm occurs through aligned system failures.", evidence:"Gold standard", use:"Incident analysis" },
+ { cat:"Risk Perception", name:"Availability Heuristic", desc:"Likelihood judged by ease of recall.", evidence:"Strong", use:"Risk communication" },
+ { cat:"Critical Thinking", name:"Hitchens' Razor", desc:"Claims without evidence can be dismissed without evidence.", evidence:"Philosophical heuristic", use:"Evidence-based decision making" },
+ { cat:"Culture", name:"Cynicism Bias", desc:"Defensive pessimism framed as realism or intelligence.", evidence:"Conceptual", use:"Culture awareness" },
+ { cat:"Motivation", name:"“Elon's Law”", desc:"Aggressive goals increase speed even if missed.", evidence:"Motivational metaphor", use:"Personal productivity" }
+];
+</script>
 <script type="text/babel" data-presets="react">
 /* Cortex app — single-file React via CDN, transformed by Babel standalone. */
 const { useState, useEffect, useMemo, useRef, useCallback } = React;
@@ -1363,6 +1405,8 @@ const DOMAINS = DATA.domains;
 const SYLLABI = window.CORTEX_SYLLABI || {};
 DISCIPLINES.forEach((d) => { d.syllabus = SYLLABI[d.code] || null; });
 const FIGURES = window.CORTEX_FIGURES || [];
+const LAWS = window.CORTEX_LAWS || [];
+function lawEvColor(s){ var t=(s||"").toLowerCase(); if(t.indexOf("very strong")>=0||t.indexOf("gold")>=0||t.indexOf("systems")>=0||t.indexOf("applied")>=0) return "var(--teal)"; if(t.indexOf("strong")>=0) return "var(--gold)"; if(t.indexOf("moderate")>=0) return "#E0A35B"; return "var(--muted)"; }
 const FIG_HUE = { Philosophy: 38, Psychology: 192, Forensic: 330, Literature: 268 };
 function figInitials(name){ var p = name.replace(/[^A-Za-z ]/g,"").trim().split(/\s+/); return ((p[0]||"")[0]||"") + ((p[p.length-1]||"")[0]||""); }
 function discHandle(d){ return "@" + d.code.toLowerCase().replace(/[^a-z0-9]/g, "") + ".psy"; }
@@ -1881,6 +1925,48 @@ function Thinkers() {
   );
 }
 
+function Laws() {
+  const [q, setQ] = useState("");
+  const [cat, setCat] = useState("All");
+  const cats = ["All"]; LAWS.forEach((l) => { if (cats.indexOf(l.cat) < 0) cats.push(l.cat); });
+  const ql = q.toLowerCase().trim();
+  let list = LAWS.filter((l) => {
+    if (cat !== "All" && l.cat !== cat) return false;
+    if (!ql) return true;
+    return (l.name + " " + l.desc + " " + l.cat + " " + l.use + " " + l.evidence).toLowerCase().includes(ql);
+  });
+  const groups = []; let last = null;
+  list.forEach((l) => { if (l.cat !== last) { groups.push({ cat: l.cat, items: [] }); last = l.cat; } groups[groups.length - 1].items.push(l); });
+  return (
+    <div className="laws">
+      <h1 className="page-title">Laws &amp; biases</h1>
+      <p className="page-sub">Cognitive, behavioural and organisational laws, with how strong the evidence is and where they apply.</p>
+      <input className="thk-search" type="text" placeholder="Search laws, biases, uses…" value={q} onChange={(e) => setQ(e.target.value)} />
+      <div className="thk-filters">
+        {cats.map((c) => <button key={c} className={"thk-filter" + (c === cat ? " on" : "")} onClick={() => setCat(c)}>{c}</button>)}
+      </div>
+      {list.length === 0
+        ? <div className="empty">No laws match that search.</div>
+        : groups.map((g) => (
+            <div key={g.cat}>
+              <div className="thk-group">{g.cat}</div>
+              {g.items.map((l) => (
+                <div key={l.name} className="law-card">
+                  <div className="law-top">
+                    <span className="law-name">{l.name}</span>
+                    <span className="law-ev" style={{ color: lawEvColor(l.evidence), borderColor: lawEvColor(l.evidence) }}>{l.evidence}</span>
+                  </div>
+                  <p className="law-desc">{l.desc}</p>
+                  <div className="law-use"><span>Applied to</span> {l.use}</div>
+                </div>
+              ))}
+            </div>
+          ))
+      }
+    </div>
+  );
+}
+
 function App() {
   const [state, setState] = useState(loadState);
   const [tab, setTab] = useState("feed");
@@ -1942,13 +2028,14 @@ function App() {
         {tab === "feed" && <Feed cards={feedCards} state={state} dispatch={dispatch} />}
         {tab === "browse" && <Browse state={state} dispatch={dispatch} setTab={setTab} />}
         {tab === "thinkers" && <Thinkers />}
+        {tab === "laws" && <Laws />}
         {tab === "saved" && <Saved state={state} dispatch={dispatch} />}
         {tab === "proposal" && <Proposal state={state} dispatch={dispatch} />}
         {tab === "you" && <You state={state} dispatch={dispatch} />}
       </main>
 
       <nav className="tabbar">
-        {[["feed", "Feed", "▤"], ["browse", "Browse", "▦"], ["thinkers", "Thinkers", "Ψ"], ["saved", "Saved", "★"], ["proposal", "Proposal", "✎"], ["you", "You", "◍"]].map(([k, lab, ic]) => (
+        {[["feed", "Feed", "▤"], ["browse", "Browse", "▦"], ["thinkers", "Thinkers", "Ψ"], ["laws", "Laws", "§"], ["saved", "Saved", "★"], ["proposal", "Proposal", "✎"], ["you", "You", "◍"]].map(([k, lab, ic]) => (
           <button key={k} className={"tab" + (tab === k ? " on" : "")} onClick={() => setTab(k)}>
             <span className="tab-ic">{ic}</span><span className="tab-lab">{lab}</span>
           </button>
