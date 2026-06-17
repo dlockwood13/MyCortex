@@ -299,7 +299,6 @@ button{font-family:inherit;cursor:pointer}
 <div id="root"></div>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script>
 /* Cortex — postgraduate psychology content.
    Card types: theory | study | debate | method | frontier
@@ -1395,81 +1394,166 @@ window.CORTEX_LAWS = [
  { cat:"Motivation", name:"“Elon's Law”", desc:"Aggressive goals increase speed even if missed.", evidence:"Motivational metaphor", use:"Personal productivity" }
 ];
 </script>
-<script type="text/babel" data-presets="react">
+<script>
 /* Cortex app — single-file React via CDN, transformed by Babel standalone. */
-const { useState, useEffect, useMemo, useRef, useCallback } = React;
-
+const {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useCallback
+} = React;
 const DATA = window.CORTEX_DATA;
 const DISCIPLINES = DATA.disciplines;
 const DOMAINS = DATA.domains;
 const SYLLABI = window.CORTEX_SYLLABI || {};
-DISCIPLINES.forEach((d) => { d.syllabus = SYLLABI[d.code] || null; });
+DISCIPLINES.forEach(d => {
+  d.syllabus = SYLLABI[d.code] || null;
+});
 const FIGURES = window.CORTEX_FIGURES || [];
 const LAWS = window.CORTEX_LAWS || [];
-function lawEvColor(s){ var t=(s||"").toLowerCase(); if(t.indexOf("very strong")>=0||t.indexOf("gold")>=0||t.indexOf("systems")>=0||t.indexOf("applied")>=0) return "var(--teal)"; if(t.indexOf("strong")>=0) return "var(--gold)"; if(t.indexOf("moderate")>=0) return "#E0A35B"; return "var(--muted)"; }
-const FIG_HUE = { Philosophy: 38, Psychology: 192, Forensic: 330, Literature: 268 };
-function figInitials(name){ var p = name.replace(/[^A-Za-z ]/g,"").trim().split(/\s+/); return ((p[0]||"")[0]||"") + ((p[p.length-1]||"")[0]||""); }
-function discHandle(d){ return "@" + d.code.toLowerCase().replace(/[^a-z0-9]/g, "") + ".psy"; }
-function monogram(d){ var m = d.code.replace(/[^A-Z]/g, ""); return (m || d.code).slice(0,2).toUpperCase(); }
-
-const TYPE_META = {
-  theory:   { label: "Theory",    accent: "#8FA7FF" },
-  study:    { label: "Key study", accent: "#5BE0C9" },
-  debate:   { label: "Debate",    accent: "#E0A35B" },
-  method:   { label: "Method",    accent: "#B98FFF" },
-  frontier: { label: "Frontier",  accent: "#C9A227" }
+function lawEvColor(s) {
+  var t = (s || "").toLowerCase();
+  if (t.indexOf("very strong") >= 0 || t.indexOf("gold") >= 0 || t.indexOf("systems") >= 0 || t.indexOf("applied") >= 0) return "var(--teal)";
+  if (t.indexOf("strong") >= 0) return "var(--gold)";
+  if (t.indexOf("moderate") >= 0) return "#E0A35B";
+  return "var(--muted)";
+}
+const FIG_HUE = {
+  Philosophy: 38,
+  Psychology: 192,
+  Forensic: 330,
+  Literature: 268
 };
-
+function figInitials(name) {
+  var p = name.replace(/[^A-Za-z ]/g, "").trim().split(/\s+/);
+  return ((p[0] || "")[0] || "") + ((p[p.length - 1] || "")[0] || "");
+}
+function discHandle(d) {
+  return "@" + d.code.toLowerCase().replace(/[^a-z0-9]/g, "") + ".psy";
+}
+function monogram(d) {
+  var m = d.code.replace(/[^A-Z]/g, "");
+  return (m || d.code).slice(0, 2).toUpperCase();
+}
+const TYPE_META = {
+  theory: {
+    label: "Theory",
+    accent: "#8FA7FF"
+  },
+  study: {
+    label: "Key study",
+    accent: "#5BE0C9"
+  },
+  debate: {
+    label: "Debate",
+    accent: "#E0A35B"
+  },
+  method: {
+    label: "Method",
+    accent: "#B98FFF"
+  },
+  frontier: {
+    label: "Frontier",
+    accent: "#C9A227"
+  }
+};
 const STORE_KEY = "cortex_state_v1";
 const defaultState = {
-  liked: {}, saved: {}, seen: {}, quiz: {}, level: "all", focus: null, domain: null, proposal: {}
+  liked: {},
+  saved: {},
+  seen: {},
+  quiz: {},
+  level: "all",
+  focus: null,
+  domain: null,
+  proposal: {}
 };
-
 function loadState() {
   try {
     const raw = localStorage.getItem(STORE_KEY);
-    if (!raw) return { ...defaultState };
-    return { ...defaultState, ...JSON.parse(raw) };
-  } catch (e) { return { ...defaultState }; }
+    if (!raw) return {
+      ...defaultState
+    };
+    return {
+      ...defaultState,
+      ...JSON.parse(raw)
+    };
+  } catch (e) {
+    return {
+      ...defaultState
+    };
+  }
 }
 function saveState(s) {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch (e) {}
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(s));
+  } catch (e) {}
 }
-
 function buildCards() {
   const out = [];
-  DISCIPLINES.forEach((d) => {
+  DISCIPLINES.forEach(d => {
     d.cards.forEach((c, i) => {
-      out.push({ id: d.code + "-" + i, disc: d, type: c.type, level: c.level, title: c.title, body: c.body });
+      out.push({
+        id: d.code + "-" + i,
+        disc: d,
+        type: c.type,
+        level: c.level,
+        title: c.title,
+        body: c.body
+      });
     });
   });
   return out;
 }
 const ALL_CARDS = buildCards();
-
-function hueColor(h, l = 60, s = 55) { return "hsl(" + h + " " + s + "% " + l + "%)"; }
-
-function Chip({ children, color }) {
-  return <span className="chip" style={{ color: color, borderColor: color }}>{children}</span>;
+function hueColor(h, l = 60, s = 55) {
+  return "hsl(" + h + " " + s + "% " + l + "%)";
 }
-function LevelChip({ level }) {
+function Chip({
+  children,
+  color
+}) {
+  return /*#__PURE__*/React.createElement("span", {
+    className: "chip",
+    style: {
+      color: color,
+      borderColor: color
+    }
+  }, children);
+}
+function LevelChip({
+  level
+}) {
   const isPhd = level === 8;
-  return <Chip color={isPhd ? "#C9A227" : "#5BE0C9"}>{isPhd ? "L8 · PhD" : "L7 · MSc"}</Chip>;
+  return /*#__PURE__*/React.createElement(Chip, {
+    color: isPhd ? "#C9A227" : "#5BE0C9"
+  }, isPhd ? "L8 · PhD" : "L7 · MSc");
 }
-
-function Avatar({ d, size }) {
+function Avatar({
+  d,
+  size
+}) {
   const dh = DOMAINS[d.domain].hue;
   const s = size || 42;
-  return (
-    <span className="avatar" style={{ width: s, height: s, fontSize: Math.round(s * 0.33),
+  return /*#__PURE__*/React.createElement("span", {
+    className: "avatar",
+    style: {
+      width: s,
+      height: s,
+      fontSize: Math.round(s * 0.33),
       background: "linear-gradient(145deg, hsl(" + dh + " 55% 32%), hsl(" + dh + " 60% 15%))",
-      borderColor: "hsl(" + dh + " 55% 55% / .6)", color: "hsl(" + dh + " 72% 80%)" }}>
-      {monogram(d)}
-    </span>
-  );
+      borderColor: "hsl(" + dh + " 55% 55% / .6)",
+      color: "hsl(" + dh + " 72% 80%)"
+    }
+  }, monogram(d));
 }
-
-function Card({ card, state, dispatch, showCheck }) {
+function Card({
+  card,
+  state,
+  dispatch,
+  showCheck
+}) {
   const [open, setOpen] = useState(false);
   const [picked, setPicked] = useState(null);
   const [burst, setBurst] = useState(false);
@@ -1478,575 +1562,1035 @@ function Card({ card, state, dispatch, showCheck }) {
   const dh = DOMAINS[card.disc.domain].hue;
   const liked = !!state.liked[card.id];
   const saved = !!state.saved[card.id];
-  const quizItem = card.disc.quiz && card.disc.quiz.length
-    ? card.disc.quiz[(parseInt(card.id.split("-").pop(), 10)) % card.disc.quiz.length]
-    : null;
-
+  const quizItem = card.disc.quiz && card.disc.quiz.length ? card.disc.quiz[parseInt(card.id.split("-").pop(), 10) % card.disc.quiz.length] : null;
   const ref = useRef(null);
   useEffect(() => {
-    const el = ref.current; if (!el || !("IntersectionObserver" in window)) { dispatch({ t: "seen", id: card.id }); return; }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (en.isIntersecting && en.intersectionRatio >= 0.5) { dispatch({ t: "seen", id: card.id }); io.disconnect(); }
+    const el = ref.current;
+    if (!el || !("IntersectionObserver" in window)) {
+      dispatch({
+        t: "seen",
+        id: card.id
       });
-    }, { threshold: [0, 0.5, 1] });
+      return;
+    }
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting && en.intersectionRatio >= 0.5) {
+          dispatch({
+            t: "seen",
+            id: card.id
+          });
+          io.disconnect();
+        }
+      });
+    }, {
+      threshold: [0, 0.5, 1]
+    });
     io.observe(el);
     return () => io.disconnect();
   }, [card.id]);
-
-  function flash(t) { setMsg(t); setTimeout(() => setMsg(null), 1600); }
+  function flash(t) {
+    setMsg(t);
+    setTimeout(() => setMsg(null), 1600);
+  }
   function onDouble() {
-    if (!state.liked[card.id]) dispatch({ t: "like", id: card.id });
-    setBurst(true); setTimeout(() => setBurst(false), 700);
+    if (!state.liked[card.id]) dispatch({
+      t: "like",
+      id: card.id
+    });
+    setBurst(true);
+    setTimeout(() => setBurst(false), 700);
   }
   function share() {
     const txt = card.title + "\n\n" + card.body + "\n\n— Cortex · " + card.disc.name + " " + discHandle(card.disc);
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(txt).then(() => flash("Copied to clipboard")).catch(() => flash("Could not copy"));
-    } else { flash("Clipboard unavailable"); }
+    } else {
+      flash("Clipboard unavailable");
+    }
   }
-
-  return (
-    <article ref={ref} className="card" style={{ "--dh": dh, "--accent": tm.accent }} onDoubleClick={onDouble}>
-      <div className="card-rule" />
-      <header className="post-head">
-        <Avatar d={card.disc} />
-        <div className="acct">
-          <span className="acct-name">{card.disc.name}<span className="verified" title="Curated field">✓</span></span>
-          <span className="acct-sub">{discHandle(card.disc)} · {DOMAINS[card.disc.domain].label}</span>
-        </div>
-        <span className="post-tag" style={{ color: tm.accent, borderColor: tm.accent }}>{tm.label}</span>
-      </header>
-
-      <h2 className="card-title">{card.title}</h2>
-      <p className="card-body">{card.body}</p>
-
-      {burst && <span className="heart-burst">♥</span>}
-
-      {showCheck && quizItem && open && (
-        <div className="quiz">
-          <p className="quiz-q">Seminar prompt · {quizItem.q}</p>
-          <div className="quiz-opts">
-            {quizItem.a.map((opt, i) => {
-              let cls = "opt";
-              if (picked !== null) {
-                if (i === quizItem.correct) cls += " right";
-                else if (i === picked) cls += " wrong";
-              }
-              return (
-                <button key={i} className={cls} disabled={picked !== null}
-                  onClick={() => { setPicked(i); dispatch({ t: "quiz", id: card.disc.code, correct: i === quizItem.correct }); }}>
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
-          {picked !== null && (
-            <p className="quiz-why">{picked === quizItem.correct ? "Correct. " : "Not quite. "}{quizItem.why}</p>
-          )}
-        </div>
-      )}
-
-      <footer className="actions">
-        <button className={"a-btn" + (liked ? " on" : "")} onClick={() => dispatch({ t: "like", id: card.id })}>
-          <span className="a-ic">{liked ? "♥" : "♡"}</span><span className="a-lab">{liked ? "Understood" : "Got it"}</span>
-        </button>
-        {showCheck && quizItem && (
-          <button className={"a-btn" + (open ? " on" : "")} onClick={() => setOpen((o) => !o)}>
-            <span className="a-ic">✎</span><span className="a-lab">Discuss</span>
-          </button>
-        )}
-        <button className={"a-btn" + (saved ? " on" : "")} onClick={() => dispatch({ t: "save", id: card.id })}>
-          <span className="a-ic">{saved ? "★" : "☆"}</span><span className="a-lab">{saved ? "Saved" : "Save"}</span>
-        </button>
-        <button className="a-btn" onClick={share}>
-          <span className="a-ic">↗</span><span className="a-lab">Share</span>
-        </button>
-        <span className="a-spacer" />
-        <LevelChip level={card.level} />
-      </footer>
-      {msg && <div className="toast">{msg}</div>}
-    </article>
-  );
+  return /*#__PURE__*/React.createElement("article", {
+    ref: ref,
+    className: "card",
+    style: {
+      "--dh": dh,
+      "--accent": tm.accent
+    },
+    onDoubleClick: onDouble
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-rule"
+  }), /*#__PURE__*/React.createElement("header", {
+    className: "post-head"
+  }, /*#__PURE__*/React.createElement(Avatar, {
+    d: card.disc
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "acct"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "acct-name"
+  }, card.disc.name, /*#__PURE__*/React.createElement("span", {
+    className: "verified",
+    title: "Curated field"
+  }, "✓")), /*#__PURE__*/React.createElement("span", {
+    className: "acct-sub"
+  }, discHandle(card.disc), " · ", DOMAINS[card.disc.domain].label)), /*#__PURE__*/React.createElement("span", {
+    className: "post-tag",
+    style: {
+      color: tm.accent,
+      borderColor: tm.accent
+    }
+  }, tm.label)), /*#__PURE__*/React.createElement("h2", {
+    className: "card-title"
+  }, card.title), /*#__PURE__*/React.createElement("p", {
+    className: "card-body"
+  }, card.body), burst && /*#__PURE__*/React.createElement("span", {
+    className: "heart-burst"
+  }, "♥"), showCheck && quizItem && open && /*#__PURE__*/React.createElement("div", {
+    className: "quiz"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "quiz-q"
+  }, "Seminar prompt · ", quizItem.q), /*#__PURE__*/React.createElement("div", {
+    className: "quiz-opts"
+  }, quizItem.a.map((opt, i) => {
+    let cls = "opt";
+    if (picked !== null) {
+      if (i === quizItem.correct) cls += " right";else if (i === picked) cls += " wrong";
+    }
+    return /*#__PURE__*/React.createElement("button", {
+      key: i,
+      className: cls,
+      disabled: picked !== null,
+      onClick: () => {
+        setPicked(i);
+        dispatch({
+          t: "quiz",
+          id: card.disc.code,
+          correct: i === quizItem.correct
+        });
+      }
+    }, opt);
+  })), picked !== null && /*#__PURE__*/React.createElement("p", {
+    className: "quiz-why"
+  }, picked === quizItem.correct ? "Correct. " : "Not quite. ", quizItem.why)), /*#__PURE__*/React.createElement("footer", {
+    className: "actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "a-btn" + (liked ? " on" : ""),
+    onClick: () => dispatch({
+      t: "like",
+      id: card.id
+    })
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "a-ic"
+  }, liked ? "♥" : "♡"), /*#__PURE__*/React.createElement("span", {
+    className: "a-lab"
+  }, liked ? "Understood" : "Got it")), showCheck && quizItem && /*#__PURE__*/React.createElement("button", {
+    className: "a-btn" + (open ? " on" : ""),
+    onClick: () => setOpen(o => !o)
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "a-ic"
+  }, "✎"), /*#__PURE__*/React.createElement("span", {
+    className: "a-lab"
+  }, "Discuss")), /*#__PURE__*/React.createElement("button", {
+    className: "a-btn" + (saved ? " on" : ""),
+    onClick: () => dispatch({
+      t: "save",
+      id: card.id
+    })
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "a-ic"
+  }, saved ? "★" : "☆"), /*#__PURE__*/React.createElement("span", {
+    className: "a-lab"
+  }, saved ? "Saved" : "Save")), /*#__PURE__*/React.createElement("button", {
+    className: "a-btn",
+    onClick: share
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "a-ic"
+  }, "↗"), /*#__PURE__*/React.createElement("span", {
+    className: "a-lab"
+  }, "Share")), /*#__PURE__*/React.createElement("span", {
+    className: "a-spacer"
+  }), /*#__PURE__*/React.createElement(LevelChip, {
+    level: card.level
+  })), msg && /*#__PURE__*/React.createElement("div", {
+    className: "toast"
+  }, msg));
 }
-
-function Feed({ cards, state, dispatch }) {
-  if (!cards.length) return <div className="empty">No cards match this filter. Clear the focus on the You tab.</div>;
-  return (
-    <div className="feed">
-      {cards.map((c) => <Card key={c.id} card={c} state={state} dispatch={dispatch} showCheck />)}
-      <div className="feed-end">
-        <p>End of this thread.</p>
-        <span>Switch focus or level on the You tab to surface different cards.</span>
-      </div>
-    </div>
-  );
+function Feed({
+  cards,
+  state,
+  dispatch
+}) {
+  if (!cards.length) return /*#__PURE__*/React.createElement("div", {
+    className: "empty"
+  }, "No cards match this filter. Clear the focus on the You tab.");
+  return /*#__PURE__*/React.createElement("div", {
+    className: "feed"
+  }, cards.map(c => /*#__PURE__*/React.createElement(Card, {
+    key: c.id,
+    card: c,
+    state: state,
+    dispatch: dispatch,
+    showCheck: true
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "feed-end"
+  }, /*#__PURE__*/React.createElement("p", null, "End of this thread."), /*#__PURE__*/React.createElement("span", null, "Switch focus or level on the You tab to surface different cards.")));
 }
-
-function Browse({ state, dispatch, setTab }) {
+function Browse({
+  state,
+  dispatch,
+  setTab
+}) {
   const [sel, setSel] = useState(null);
   if (sel) {
-    const d = DISCIPLINES.find((x) => x.code === sel);
-    if (d) return <Discipline d={d} state={state} dispatch={dispatch} setTab={setTab} onBack={() => setSel(null)} />;
+    const d = DISCIPLINES.find(x => x.code === sel);
+    if (d) return /*#__PURE__*/React.createElement(Discipline, {
+      d: d,
+      state: state,
+      dispatch: dispatch,
+      setTab: setTab,
+      onBack: () => setSel(null)
+    });
   }
   const byDomain = {};
-  DISCIPLINES.forEach((d) => { (byDomain[d.domain] = byDomain[d.domain] || []).push(d); });
-  return (
-    <div className="browse">
-      <h1 className="page-title">Explore</h1>
-      <p className="page-sub">Forty fields, each with a full syllabus. Open one to read its curriculum, then follow it into your feed.</p>
-      {Object.keys(DOMAINS).map((dom) => (
-        <section key={dom} className="dom-block">
-          <h3 className="dom-label" style={{ color: hueColor(DOMAINS[dom].hue, 70) }}>{DOMAINS[dom].label}</h3>
-          <div className="disc-grid">
-            {(byDomain[dom] || []).map((d) => {
-              const total = d.cards.length;
-              const seen = d.cards.reduce((n, _c, i) => n + (state.seen[d.code + "-" + i] ? 1 : 0), 0);
-              const pct = Math.round((seen / total) * 100);
-              return (
-                <button key={d.code} className="disc-card" style={{ "--dh": DOMAINS[dom].hue }}
-                  onClick={() => setSel(d.code)}>
-                  <span className="disc-card-top"><Avatar d={d} size={30} /><span className="disc-code">{d.code}</span></span>
-                  <span className="disc-name">{d.name}</span>
-                  <span className="bar"><i style={{ width: pct + "%" }} /></span>
-                  <span className="disc-meta">{d.syllabus ? d.syllabus.modules.length + " modules · " : ""}{seen}/{total} posts</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      ))}
-    </div>
-  );
+  DISCIPLINES.forEach(d => {
+    (byDomain[d.domain] = byDomain[d.domain] || []).push(d);
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    className: "browse"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "page-title"
+  }, "Explore"), /*#__PURE__*/React.createElement("p", {
+    className: "page-sub"
+  }, "Forty fields, each with a full syllabus. Open one to read its curriculum, then follow it into your feed."), Object.keys(DOMAINS).map(dom => /*#__PURE__*/React.createElement("section", {
+    key: dom,
+    className: "dom-block"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "dom-label",
+    style: {
+      color: hueColor(DOMAINS[dom].hue, 70)
+    }
+  }, DOMAINS[dom].label), /*#__PURE__*/React.createElement("div", {
+    className: "disc-grid"
+  }, (byDomain[dom] || []).map(d => {
+    const total = d.cards.length;
+    const seen = d.cards.reduce((n, _c, i) => n + (state.seen[d.code + "-" + i] ? 1 : 0), 0);
+    const pct = Math.round(seen / total * 100);
+    return /*#__PURE__*/React.createElement("button", {
+      key: d.code,
+      className: "disc-card",
+      style: {
+        "--dh": DOMAINS[dom].hue
+      },
+      onClick: () => setSel(d.code)
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "disc-card-top"
+    }, /*#__PURE__*/React.createElement(Avatar, {
+      d: d,
+      size: 30
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "disc-code"
+    }, d.code)), /*#__PURE__*/React.createElement("span", {
+      className: "disc-name"
+    }, d.name), /*#__PURE__*/React.createElement("span", {
+      className: "bar"
+    }, /*#__PURE__*/React.createElement("i", {
+      style: {
+        width: pct + "%"
+      }
+    })), /*#__PURE__*/React.createElement("span", {
+      className: "disc-meta"
+    }, d.syllabus ? d.syllabus.modules.length + " modules · " : "", seen, "/", total, " posts"));
+  })))));
 }
-
-function Discipline({ d, state, dispatch, setTab, onBack }) {
+function Discipline({
+  d,
+  state,
+  dispatch,
+  setTab,
+  onBack
+}) {
   const dh = DOMAINS[d.domain].hue;
   const total = d.cards.length;
   const seen = d.cards.reduce((n, _c, i) => n + (state.seen[d.code + "-" + i] ? 1 : 0), 0);
-  const pct = Math.round((seen / total) * 100);
-  const cards = d.cards.map((c, i) => ({ id: d.code + "-" + i, disc: d, type: c.type, level: c.level, title: c.title, body: c.body }));
+  const pct = Math.round(seen / total * 100);
+  const cards = d.cards.map((c, i) => ({
+    id: d.code + "-" + i,
+    disc: d,
+    type: c.type,
+    level: c.level,
+    title: c.title,
+    body: c.body
+  }));
   const syl = d.syllabus;
-  function focusFeed() { dispatch({ t: "focus", code: d.code }); setTab("feed"); }
-  function saveAll() { d.cards.forEach((_c, i) => { const id = d.code + "-" + i; if (!state.saved[id]) dispatch({ t: "save", id: id }); }); }
-  return (
-    <div className="disc-detail" style={{ "--dh": dh }}>
-      <button className="back" onClick={onBack}>‹ Explore</button>
-      <header className="dd-head">
-        <Avatar d={d} size={66} />
-        <div className="dd-id">
-          <h1 className="dd-name">{d.name}<span className="verified" title="Curated field">✓</span></h1>
-          <span className="dd-handle">{discHandle(d)}</span>
-          <span className="dd-meta">{DOMAINS[d.domain].label} · {total} posts · {pct}% read</span>
-        </div>
-      </header>
-      <div className="bar dd-bar"><i style={{ width: pct + "%", background: "hsl(" + dh + " 60% 62%)" }} /></div>
-      <div className="dd-actions">
-        <button className="follow" onClick={focusFeed}>Focus in feed</button>
-        <button className="ghost" onClick={saveAll}>Save all</button>
-      </div>
-
-      {syl && (
-        <section className="syl">
-          <h3 className="syl-h">Syllabus</h3>
-          <p className="syl-overview">{syl.overview}</p>
-          {syl.modules.map((m, i) => (
-            <div key={i} className="mod">
-              <span className="mod-n" style={{ color: "hsl(" + dh + " 65% 70%)", borderColor: "hsl(" + dh + " 55% 50% / .5)" }}>{i + 1}</span>
-              <div className="mod-body">
-                <div className="mod-t">{m.t}</div>
-                <div className="mod-o">{m.o}</div>
-                <div className="mod-k">Key thinkers · {m.k}</div>
-              </div>
-            </div>
-          ))}
-        </section>
-      )}
-
-      <section className="dd-posts">
-        <h3 className="syl-h">Posts in this field</h3>
-        {cards.map((c) => <Card key={c.id} card={c} state={state} dispatch={dispatch} showCheck />)}
-      </section>
-    </div>
-  );
+  function focusFeed() {
+    dispatch({
+      t: "focus",
+      code: d.code
+    });
+    setTab("feed");
+  }
+  function saveAll() {
+    d.cards.forEach((_c, i) => {
+      const id = d.code + "-" + i;
+      if (!state.saved[id]) dispatch({
+        t: "save",
+        id: id
+      });
+    });
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "disc-detail",
+    style: {
+      "--dh": dh
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "back",
+    onClick: onBack
+  }, "‹ Explore"), /*#__PURE__*/React.createElement("header", {
+    className: "dd-head"
+  }, /*#__PURE__*/React.createElement(Avatar, {
+    d: d,
+    size: 66
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dd-id"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "dd-name"
+  }, d.name, /*#__PURE__*/React.createElement("span", {
+    className: "verified",
+    title: "Curated field"
+  }, "✓")), /*#__PURE__*/React.createElement("span", {
+    className: "dd-handle"
+  }, discHandle(d)), /*#__PURE__*/React.createElement("span", {
+    className: "dd-meta"
+  }, DOMAINS[d.domain].label, " · ", total, " posts · ", pct, "% read"))), /*#__PURE__*/React.createElement("div", {
+    className: "bar dd-bar"
+  }, /*#__PURE__*/React.createElement("i", {
+    style: {
+      width: pct + "%",
+      background: "hsl(" + dh + " 60% 62%)"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "dd-actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "follow",
+    onClick: focusFeed
+  }, "Focus in feed"), /*#__PURE__*/React.createElement("button", {
+    className: "ghost",
+    onClick: saveAll
+  }, "Save all")), syl && /*#__PURE__*/React.createElement("section", {
+    className: "syl"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "syl-h"
+  }, "Syllabus"), /*#__PURE__*/React.createElement("p", {
+    className: "syl-overview"
+  }, syl.overview), syl.modules.map((m, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "mod"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "mod-n",
+    style: {
+      color: "hsl(" + dh + " 65% 70%)",
+      borderColor: "hsl(" + dh + " 55% 50% / .5)"
+    }
+  }, i + 1), /*#__PURE__*/React.createElement("div", {
+    className: "mod-body"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mod-t"
+  }, m.t), /*#__PURE__*/React.createElement("div", {
+    className: "mod-o"
+  }, m.o), /*#__PURE__*/React.createElement("div", {
+    className: "mod-k"
+  }, "Key thinkers · ", m.k))))), /*#__PURE__*/React.createElement("section", {
+    className: "dd-posts"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "syl-h"
+  }, "Posts in this field"), cards.map(c => /*#__PURE__*/React.createElement(Card, {
+    key: c.id,
+    card: c,
+    state: state,
+    dispatch: dispatch,
+    showCheck: true
+  }))));
 }
-
-function Saved({ state, dispatch }) {
-  const cards = ALL_CARDS.filter((c) => state.saved[c.id]);
-  if (!cards.length) return <div className="empty">Nothing saved yet. Tap ☆ Save on any card.</div>;
-  return (
-    <div className="saved">
-      <h1 className="page-title">Saved cards</h1>
-      <p className="page-sub">{cards.length} card{cards.length === 1 ? "" : "s"} kept for revision.</p>
-      {cards.map((c) => <Card key={c.id} card={c} state={state} dispatch={dispatch} />)}
-    </div>
-  );
+function Saved({
+  state,
+  dispatch
+}) {
+  const cards = ALL_CARDS.filter(c => state.saved[c.id]);
+  if (!cards.length) return /*#__PURE__*/React.createElement("div", {
+    className: "empty"
+  }, "Nothing saved yet. Tap ☆ Save on any card.");
+  return /*#__PURE__*/React.createElement("div", {
+    className: "saved"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "page-title"
+  }, "Saved cards"), /*#__PURE__*/React.createElement("p", {
+    className: "page-sub"
+  }, cards.length, " card", cards.length === 1 ? "" : "s", " kept for revision."), cards.map(c => /*#__PURE__*/React.createElement(Card, {
+    key: c.id,
+    card: c,
+    state: state,
+    dispatch: dispatch
+  })));
 }
-
-const PROPOSAL_FIELDS = [
-  { k: "title", label: "Working title", hint: "Concise, specific, signals the variables. Avoid 'A study of...'.", area: false },
-  { k: "problem", label: "Problem statement", hint: "What gap or tension in the literature justifies this work? Two or three sentences.", area: true },
-  { k: "question", label: "Research question(s)", hint: "Answerable, bounded. For a PhD, one primary question plus sub-questions.", area: true },
-  { k: "aims", label: "Aims and objectives", hint: "Aim is the overall purpose. Objectives are the concrete, measurable steps.", area: true },
-  { k: "gap", label: "Literature gap and contribution", hint: "What does the field get wrong or not know, and what will you add?", area: true },
-  { k: "theory", label: "Theoretical framework", hint: "The lens through which you interpret. Name it; do not leave it implicit.", area: true },
-  { k: "method", label: "Design and methodology", hint: "Paradigm, design, sampling, measures or materials, analysis plan. Justify each choice.", area: true },
-  { k: "ethics", label: "Ethics and reflexivity", hint: "Risks, consent, data protection, positionality. UK: name your committee and framework.", area: true },
-  { k: "timeline", label: "Timeline and feasibility", hint: "Phased plan against the funded duration. Flag the riskiest dependency.", area: true }
-];
-
-function Proposal({ state, dispatch }) {
+const PROPOSAL_FIELDS = [{
+  k: "title",
+  label: "Working title",
+  hint: "Concise, specific, signals the variables. Avoid 'A study of...'.",
+  area: false
+}, {
+  k: "problem",
+  label: "Problem statement",
+  hint: "What gap or tension in the literature justifies this work? Two or three sentences.",
+  area: true
+}, {
+  k: "question",
+  label: "Research question(s)",
+  hint: "Answerable, bounded. For a PhD, one primary question plus sub-questions.",
+  area: true
+}, {
+  k: "aims",
+  label: "Aims and objectives",
+  hint: "Aim is the overall purpose. Objectives are the concrete, measurable steps.",
+  area: true
+}, {
+  k: "gap",
+  label: "Literature gap and contribution",
+  hint: "What does the field get wrong or not know, and what will you add?",
+  area: true
+}, {
+  k: "theory",
+  label: "Theoretical framework",
+  hint: "The lens through which you interpret. Name it; do not leave it implicit.",
+  area: true
+}, {
+  k: "method",
+  label: "Design and methodology",
+  hint: "Paradigm, design, sampling, measures or materials, analysis plan. Justify each choice.",
+  area: true
+}, {
+  k: "ethics",
+  label: "Ethics and reflexivity",
+  hint: "Risks, consent, data protection, positionality. UK: name your committee and framework.",
+  area: true
+}, {
+  k: "timeline",
+  label: "Timeline and feasibility",
+  hint: "Phased plan against the funded duration. Flag the riskiest dependency.",
+  area: true
+}];
+function Proposal({
+  state,
+  dispatch
+}) {
   const p = state.proposal || {};
-  const filled = PROPOSAL_FIELDS.filter((f) => (p[f.k] || "").trim().length > 0).length;
-
+  const filled = PROPOSAL_FIELDS.filter(f => (p[f.k] || "").trim().length > 0).length;
   function exportProposal() {
     let txt = "RESEARCH PROPOSAL — draft\n" + new Date().toLocaleString("en-GB") + "\n\n";
-    PROPOSAL_FIELDS.forEach((f) => { txt += f.label.toUpperCase() + "\n" + ((p[f.k] || "").trim() || "[to write]") + "\n\n"; });
-    const blob = new Blob([txt], { type: "text/plain" });
+    PROPOSAL_FIELDS.forEach(f => {
+      txt += f.label.toUpperCase() + "\n" + ((p[f.k] || "").trim() || "[to write]") + "\n\n";
+    });
+    const blob = new Blob([txt], {
+      type: "text/plain"
+    });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "research-proposal-draft.txt"; a.click();
+    a.download = "research-proposal-draft.txt";
+    a.click();
   }
-
-  return (
-    <div className="proposal">
-      <h1 className="page-title">Research proposal</h1>
-      <p className="page-sub">The artefact that separates taught study from a doctorate. {filled}/{PROPOSAL_FIELDS.length} sections drafted. Saved on this device as you type.</p>
-      <div className="prop-progress"><i style={{ width: Math.round(filled / PROPOSAL_FIELDS.length * 100) + "%" }} /></div>
-
-      {PROPOSAL_FIELDS.map((f) => (
-        <div key={f.k} className="field">
-          <label>{f.label}</label>
-          <span className="field-hint">{f.hint}</span>
-          {f.area
-            ? <textarea rows={3} value={p[f.k] || ""} onChange={(e) => dispatch({ t: "proposal", k: f.k, v: e.target.value })} />
-            : <input value={p[f.k] || ""} onChange={(e) => dispatch({ t: "proposal", k: f.k, v: e.target.value })} />}
-        </div>
-      ))}
-
-      <div className="prop-actions">
-        <button className="ghost" onClick={exportProposal}>Export as text</button>
-        <button className="ghost danger" onClick={() => { if (confirm("Clear the whole proposal draft?")) dispatch({ t: "proposal-clear" }); }}>Clear draft</button>
-      </div>
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    className: "proposal"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "page-title"
+  }, "Research proposal"), /*#__PURE__*/React.createElement("p", {
+    className: "page-sub"
+  }, "The artefact that separates taught study from a doctorate. ", filled, "/", PROPOSAL_FIELDS.length, " sections drafted. Saved on this device as you type."), /*#__PURE__*/React.createElement("div", {
+    className: "prop-progress"
+  }, /*#__PURE__*/React.createElement("i", {
+    style: {
+      width: Math.round(filled / PROPOSAL_FIELDS.length * 100) + "%"
+    }
+  })), PROPOSAL_FIELDS.map(f => /*#__PURE__*/React.createElement("div", {
+    key: f.k,
+    className: "field"
+  }, /*#__PURE__*/React.createElement("label", null, f.label), /*#__PURE__*/React.createElement("span", {
+    className: "field-hint"
+  }, f.hint), f.area ? /*#__PURE__*/React.createElement("textarea", {
+    rows: 3,
+    value: p[f.k] || "",
+    onChange: e => dispatch({
+      t: "proposal",
+      k: f.k,
+      v: e.target.value
+    })
+  }) : /*#__PURE__*/React.createElement("input", {
+    value: p[f.k] || "",
+    onChange: e => dispatch({
+      t: "proposal",
+      k: f.k,
+      v: e.target.value
+    })
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "prop-actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "ghost",
+    onClick: exportProposal
+  }, "Export as text"), /*#__PURE__*/React.createElement("button", {
+    className: "ghost danger",
+    onClick: () => {
+      if (confirm("Clear the whole proposal draft?")) dispatch({
+        t: "proposal-clear"
+      });
+    }
+  }, "Clear draft")));
 }
-
-function You({ state, dispatch }) {
+function You({
+  state,
+  dispatch
+}) {
+  var _DISCIPLINES$find;
   const seenCount = Object.keys(state.seen).length;
   const likedCount = Object.keys(state.liked).length;
   const savedCount = Object.keys(state.saved).length;
-
-  let qTot = 0, qRight = 0;
-  Object.values(state.quiz).forEach((r) => { qTot += r.total || 0; qRight += r.correct || 0; });
-  const acc = qTot ? Math.round((qRight / qTot) * 100) : null;
-
-  const ranked = DISCIPLINES.map((d) => {
+  let qTot = 0,
+    qRight = 0;
+  Object.values(state.quiz).forEach(r => {
+    qTot += r.total || 0;
+    qRight += r.correct || 0;
+  });
+  const acc = qTot ? Math.round(qRight / qTot * 100) : null;
+  const ranked = DISCIPLINES.map(d => {
     const seen = d.cards.reduce((n, _c, i) => n + (state.seen[d.code + "-" + i] ? 1 : 0), 0);
-    return { d, ratio: seen / d.cards.length };
+    return {
+      d,
+      ratio: seen / d.cards.length
+    };
   }).sort((a, b) => a.ratio - b.ratio).slice(0, 3);
-
   function exportAll() {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(state, null, 2)], {
+      type: "application/json"
+    });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "cortex-progress.json"; a.click();
+    a.download = "cortex-progress.json";
+    a.click();
   }
   function importAll(e) {
-    const file = e.target.files[0]; if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
     const r = new FileReader();
-    r.onload = () => { try { dispatch({ t: "replace", state: JSON.parse(r.result) }); } catch (err) { alert("Could not read that file."); } };
+    r.onload = () => {
+      try {
+        dispatch({
+          t: "replace",
+          state: JSON.parse(r.result)
+        });
+      } catch (err) {
+        alert("Could not read that file.");
+      }
+    };
     r.readAsText(file);
   }
-
-  return (
-    <div className="you">
-      <div className="profile">
-        <span className="pf-avatar">You</span>
-        <div>
-          <h1 className="pf-name">Your study</h1>
-          <span className="pf-handle">@you · postgraduate psychology</span>
-        </div>
-      </div>
-      <div className="stats">
-        <div className="stat"><b>{seenCount}</b><span>cards seen</span></div>
-        <div className="stat"><b>{likedCount}</b><span>understood</span></div>
-        <div className="stat"><b>{savedCount}</b><span>saved</span></div>
-        <div className="stat"><b>{acc === null ? "–" : acc + "%"}</b><span>quiz accuracy</span></div>
-      </div>
-
-      <section className="panel">
-        <h3>Level</h3>
-        <p className="panel-sub">L7 is taught mastery, L8 is research frontier. Filter the feed to one or see both.</p>
-        <div className="seg">
-          {[["all", "Both"], ["7", "L7 only"], ["8", "L8 only"]].map(([v, lab]) => (
-            <button key={v} className={"seg-btn" + (String(state.level) === v ? " on" : "")} onClick={() => dispatch({ t: "level", v })}>{lab}</button>
-          ))}
-        </div>
-      </section>
-
-      <section className="panel">
-        <h3>Suggested next</h3>
-        <p className="panel-sub">Your three least-explored areas. Breadth here means knowing the shape of fields adjacent to your own.</p>
-        <div className="path">
-          {ranked.map(({ d, ratio }) => (
-            <button key={d.code} className="path-row" onClick={() => dispatch({ t: "focus", code: d.code })}>
-              <span className="path-code">{d.code}</span>
-              <span className="path-name">{d.name}</span>
-              <span className="path-pct">{Math.round(ratio * 100)}%</span>
-            </button>
-          ))}
-        </div>
-        {state.focus && <p className="focus-note">Focus set on {DISCIPLINES.find(d => d.code === state.focus)?.name}. Open the Feed tab. <button className="link" onClick={() => dispatch({ t: "focus", code: null })}>Clear focus</button></p>}
-      </section>
-
-      <section className="panel">
-        <h3>Backup</h3>
-        <p className="panel-sub">Progress lives only on this device. Export to keep it.</p>
-        <div className="prop-actions">
-          <button className="ghost" onClick={exportAll}>Export progress</button>
-          <label className="ghost file-btn">Import<input type="file" accept="application/json" onChange={importAll} hidden /></label>
-          <button className="ghost danger" onClick={() => { if (confirm("Reset all progress on this device?")) dispatch({ t: "reset" }); }}>Reset</button>
-        </div>
-      </section>
-
-      <p className="colophon">Cortex · postgraduate psychology · built from the Bella's Brain pattern, retuned for L7/L8.</p>
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    className: "you"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "profile"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "pf-avatar"
+  }, "You"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "pf-name"
+  }, "Your study"), /*#__PURE__*/React.createElement("span", {
+    className: "pf-handle"
+  }, "@you · postgraduate psychology"))), /*#__PURE__*/React.createElement("div", {
+    className: "stats"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "stat"
+  }, /*#__PURE__*/React.createElement("b", null, seenCount), /*#__PURE__*/React.createElement("span", null, "cards seen")), /*#__PURE__*/React.createElement("div", {
+    className: "stat"
+  }, /*#__PURE__*/React.createElement("b", null, likedCount), /*#__PURE__*/React.createElement("span", null, "understood")), /*#__PURE__*/React.createElement("div", {
+    className: "stat"
+  }, /*#__PURE__*/React.createElement("b", null, savedCount), /*#__PURE__*/React.createElement("span", null, "saved")), /*#__PURE__*/React.createElement("div", {
+    className: "stat"
+  }, /*#__PURE__*/React.createElement("b", null, acc === null ? "–" : acc + "%"), /*#__PURE__*/React.createElement("span", null, "quiz accuracy"))), /*#__PURE__*/React.createElement("section", {
+    className: "panel"
+  }, /*#__PURE__*/React.createElement("h3", null, "Level"), /*#__PURE__*/React.createElement("p", {
+    className: "panel-sub"
+  }, "L7 is taught mastery, L8 is research frontier. Filter the feed to one or see both."), /*#__PURE__*/React.createElement("div", {
+    className: "seg"
+  }, [["all", "Both"], ["7", "L7 only"], ["8", "L8 only"]].map(([v, lab]) => /*#__PURE__*/React.createElement("button", {
+    key: v,
+    className: "seg-btn" + (String(state.level) === v ? " on" : ""),
+    onClick: () => dispatch({
+      t: "level",
+      v
+    })
+  }, lab)))), /*#__PURE__*/React.createElement("section", {
+    className: "panel"
+  }, /*#__PURE__*/React.createElement("h3", null, "Suggested next"), /*#__PURE__*/React.createElement("p", {
+    className: "panel-sub"
+  }, "Your three least-explored areas. Breadth here means knowing the shape of fields adjacent to your own."), /*#__PURE__*/React.createElement("div", {
+    className: "path"
+  }, ranked.map(({
+    d,
+    ratio
+  }) => /*#__PURE__*/React.createElement("button", {
+    key: d.code,
+    className: "path-row",
+    onClick: () => dispatch({
+      t: "focus",
+      code: d.code
+    })
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "path-code"
+  }, d.code), /*#__PURE__*/React.createElement("span", {
+    className: "path-name"
+  }, d.name), /*#__PURE__*/React.createElement("span", {
+    className: "path-pct"
+  }, Math.round(ratio * 100), "%")))), state.focus && /*#__PURE__*/React.createElement("p", {
+    className: "focus-note"
+  }, "Focus set on ", (_DISCIPLINES$find = DISCIPLINES.find(d => d.code === state.focus)) === null || _DISCIPLINES$find === void 0 ? void 0 : _DISCIPLINES$find.name, ". Open the Feed tab. ", /*#__PURE__*/React.createElement("button", {
+    className: "link",
+    onClick: () => dispatch({
+      t: "focus",
+      code: null
+    })
+  }, "Clear focus"))), /*#__PURE__*/React.createElement("section", {
+    className: "panel"
+  }, /*#__PURE__*/React.createElement("h3", null, "Backup"), /*#__PURE__*/React.createElement("p", {
+    className: "panel-sub"
+  }, "Progress lives only on this device. Export to keep it."), /*#__PURE__*/React.createElement("div", {
+    className: "prop-actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "ghost",
+    onClick: exportAll
+  }, "Export progress"), /*#__PURE__*/React.createElement("label", {
+    className: "ghost file-btn"
+  }, "Import", /*#__PURE__*/React.createElement("input", {
+    type: "file",
+    accept: "application/json",
+    onChange: importAll,
+    hidden: true
+  })), /*#__PURE__*/React.createElement("button", {
+    className: "ghost danger",
+    onClick: () => {
+      if (confirm("Reset all progress on this device?")) dispatch({
+        t: "reset"
+      });
+    }
+  }, "Reset"))), /*#__PURE__*/React.createElement("p", {
+    className: "colophon"
+  }, "Cortex · postgraduate psychology · built from the Bella's Brain pattern, retuned for L7/L8."));
 }
-
-function Stories({ state, dispatch, setTab }) {
+function Stories({
+  state,
+  dispatch,
+  setTab
+}) {
   const doms = Object.keys(DOMAINS);
   const active = state.domain;
-  return (
-    <div className="stories">
-      <button className={"story" + (!active && !state.focus ? " on" : "")} onClick={() => dispatch({ t: "domain", code: null })}>
-        <span className="story-av all">★</span><span className="story-lab">For you</span>
-      </button>
-      {doms.map((dom) => {
-        const dh = DOMAINS[dom].hue; const on = active === dom;
-        return (
-          <button key={dom} className={"story" + (on ? " on" : "")} onClick={() => dispatch({ t: "domain", code: on ? null : dom })}>
-            <span className="story-av" style={{ background: "linear-gradient(145deg, hsl(" + dh + " 55% 34%), hsl(" + dh + " 60% 16%))", borderColor: "hsl(" + dh + " 60% 60%)", color: "hsl(" + dh + " 72% 82%)" }}>{DOMAINS[dom].label.slice(0, 2)}</span>
-            <span className="story-lab">{DOMAINS[dom].label}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
+  return /*#__PURE__*/React.createElement("div", {
+    className: "stories"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "story" + (!active && !state.focus ? " on" : ""),
+    onClick: () => dispatch({
+      t: "domain",
+      code: null
+    })
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "story-av all"
+  }, "★"), /*#__PURE__*/React.createElement("span", {
+    className: "story-lab"
+  }, "For you")), doms.map(dom => {
+    const dh = DOMAINS[dom].hue;
+    const on = active === dom;
+    return /*#__PURE__*/React.createElement("button", {
+      key: dom,
+      className: "story" + (on ? " on" : ""),
+      onClick: () => dispatch({
+        t: "domain",
+        code: on ? null : dom
+      })
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "story-av",
+      style: {
+        background: "linear-gradient(145deg, hsl(" + dh + " 55% 34%), hsl(" + dh + " 60% 16%))",
+        borderColor: "hsl(" + dh + " 60% 60%)",
+        color: "hsl(" + dh + " 72% 82%)"
+      }
+    }, DOMAINS[dom].label.slice(0, 2)), /*#__PURE__*/React.createElement("span", {
+      className: "story-lab"
+    }, DOMAINS[dom].label));
+  }));
 }
-
 function Thinkers() {
   const [sel, setSel] = useState(null);
   const [q, setQ] = useState("");
   const [disc, setDisc] = useState("All");
   const DISC = ["All", "Philosophy", "Psychology", "Forensic", "Literature"];
-
   if (sel) {
-    const f = FIGURES.find((x) => x.id === sel);
+    const f = FIGURES.find(x => x.id === sel);
     if (f) {
       const hue = FIG_HUE[f.discipline] || 38;
-      return (
-        <div className="thinker-detail" style={{ "--dh": hue }}>
-          <button className="back" onClick={() => setSel(null)}>‹ Thinkers</button>
-          <header className="td-head">
-            <span className="thk-av" style={{ width: 60, height: 60, fontSize: 20,
-              background: "linear-gradient(145deg, hsl(" + hue + " 55% 32%), hsl(" + hue + " 60% 15%))",
-              borderColor: "hsl(" + hue + " 55% 55% / .6)", color: "hsl(" + hue + " 72% 82%)" }}>{figInitials(f.name)}</span>
-            <div className="td-id">
-              <h1 className="td-name">{f.name}</h1>
-              <span className="td-meta">{f.discipline} · {f.dates}</span>
-              <span className="td-role">{f.role}</span>
-            </div>
-          </header>
-          <div className="callout"><strong>In a nutshell:</strong> {f.nutshell}</div>
-          <div className="td-body" dangerouslySetInnerHTML={{ __html: f.profile }} />
-          <button className="follow" style={{ marginTop: 26 }} onClick={() => setSel(null)}>Browse all thinkers</button>
-        </div>
-      );
+      return /*#__PURE__*/React.createElement("div", {
+        className: "thinker-detail",
+        style: {
+          "--dh": hue
+        }
+      }, /*#__PURE__*/React.createElement("button", {
+        className: "back",
+        onClick: () => setSel(null)
+      }, "‹ Thinkers"), /*#__PURE__*/React.createElement("header", {
+        className: "td-head"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "thk-av",
+        style: {
+          width: 60,
+          height: 60,
+          fontSize: 20,
+          background: "linear-gradient(145deg, hsl(" + hue + " 55% 32%), hsl(" + hue + " 60% 15%))",
+          borderColor: "hsl(" + hue + " 55% 55% / .6)",
+          color: "hsl(" + hue + " 72% 82%)"
+        }
+      }, figInitials(f.name)), /*#__PURE__*/React.createElement("div", {
+        className: "td-id"
+      }, /*#__PURE__*/React.createElement("h1", {
+        className: "td-name"
+      }, f.name), /*#__PURE__*/React.createElement("span", {
+        className: "td-meta"
+      }, f.discipline, " · ", f.dates), /*#__PURE__*/React.createElement("span", {
+        className: "td-role"
+      }, f.role))), /*#__PURE__*/React.createElement("div", {
+        className: "callout"
+      }, /*#__PURE__*/React.createElement("strong", null, "In a nutshell:"), " ", f.nutshell), /*#__PURE__*/React.createElement("div", {
+        className: "td-body",
+        dangerouslySetInnerHTML: {
+          __html: f.profile
+        }
+      }), /*#__PURE__*/React.createElement("button", {
+        className: "follow",
+        style: {
+          marginTop: 26
+        },
+        onClick: () => setSel(null)
+      }, "Browse all thinkers"));
     }
   }
-
   const ql = q.toLowerCase().trim();
-  const featured = FIGURES.find((x) => x.featured);
+  const featured = FIGURES.find(x => x.featured);
   const spotlight = !ql && disc === "All";
-  let list = FIGURES.filter((f) => {
+  let list = FIGURES.filter(f => {
     if (spotlight && f.featured) return false;
     if (disc !== "All" && f.discipline !== disc) return false;
     if (!ql) return true;
     return (f.name + " " + f.role + " " + f.nutshell + " " + f.discipline + " " + f.profile).toLowerCase().includes(ql);
   });
   const order = ["Philosophy", "Psychology", "Forensic", "Literature"];
-  list.sort((a, b) => { const d = order.indexOf(a.discipline) - order.indexOf(b.discipline); return d !== 0 ? d : a.name.localeCompare(b.name); });
-  const groups = []; let last = null;
-  list.forEach((f) => { if (f.discipline !== last) { groups.push({ disc: f.discipline, items: [] }); last = f.discipline; } groups[groups.length - 1].items.push(f); });
-
-  return (
-    <div className="thinkers">
-      <h1 className="page-title">Thinkers</h1>
-      <p className="page-sub">The philosophers, psychologists and writers behind the ideas. Tap any name for a full profile.</p>
-      <input className="thk-search" type="text" placeholder="Search thinkers, ideas, roles…" value={q} onChange={(e) => setQ(e.target.value)} />
-      <div className="thk-filters">
-        {DISC.map((d) => <button key={d} className={"thk-filter" + (d === disc ? " on" : "")} onClick={() => setDisc(d)}>{d}</button>)}
-      </div>
-      {spotlight && featured && (
-        <button className="thk-featured" onClick={() => setSel(featured.id)}>
-          <span className="thk-fe-eyebrow">★ Featured thinker</span>
-          <span className="thk-fe-name">{featured.name}</span>
-          <span className="thk-fe-role">{featured.dates} · {featured.role}</span>
-          <span className="thk-fe-nut">{featured.nutshell}</span>
-          <span className="thk-fe-cta">Read the full profile →</span>
-        </button>
-      )}
-      {list.length === 0
-        ? <div className="empty">No thinkers match that search.</div>
-        : groups.map((g) => (
-            <div key={g.disc}>
-              <div className="thk-group">{g.disc}</div>
-              {g.items.map((f) => {
-                const hue = FIG_HUE[f.discipline] || 38;
-                return (
-                  <button key={f.id} className="thk-card" onClick={() => setSel(f.id)}>
-                    <span className="thk-av" style={{ background: "linear-gradient(145deg, hsl(" + hue + " 55% 32%), hsl(" + hue + " 60% 15%))", borderColor: "hsl(" + hue + " 55% 55% / .6)", color: "hsl(" + hue + " 72% 82%)" }}>{figInitials(f.name)}</span>
-                    <span className="thk-info">
-                      <span className="thk-disc" style={{ color: "hsl(" + hue + " 60% 70%)" }}>{f.discipline}</span>
-                      <span className="thk-name">{f.name}</span>
-                      <span className="thk-dates">{f.dates}</span>
-                      <span className="thk-role">{f.role}</span>
-                    </span>
-                    <span className="thk-chev">›</span>
-                  </button>
-                );
-              })}
-            </div>
-          ))
+  list.sort((a, b) => {
+    const d = order.indexOf(a.discipline) - order.indexOf(b.discipline);
+    return d !== 0 ? d : a.name.localeCompare(b.name);
+  });
+  const groups = [];
+  let last = null;
+  list.forEach(f => {
+    if (f.discipline !== last) {
+      groups.push({
+        disc: f.discipline,
+        items: []
+      });
+      last = f.discipline;
+    }
+    groups[groups.length - 1].items.push(f);
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    className: "thinkers"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "page-title"
+  }, "Thinkers"), /*#__PURE__*/React.createElement("p", {
+    className: "page-sub"
+  }, "The philosophers, psychologists and writers behind the ideas. Tap any name for a full profile."), /*#__PURE__*/React.createElement("input", {
+    className: "thk-search",
+    type: "text",
+    placeholder: "Search thinkers, ideas, roles…",
+    value: q,
+    onChange: e => setQ(e.target.value)
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "thk-filters"
+  }, DISC.map(d => /*#__PURE__*/React.createElement("button", {
+    key: d,
+    className: "thk-filter" + (d === disc ? " on" : ""),
+    onClick: () => setDisc(d)
+  }, d))), spotlight && featured && /*#__PURE__*/React.createElement("button", {
+    className: "thk-featured",
+    onClick: () => setSel(featured.id)
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "thk-fe-eyebrow"
+  }, "★ Featured thinker"), /*#__PURE__*/React.createElement("span", {
+    className: "thk-fe-name"
+  }, featured.name), /*#__PURE__*/React.createElement("span", {
+    className: "thk-fe-role"
+  }, featured.dates, " · ", featured.role), /*#__PURE__*/React.createElement("span", {
+    className: "thk-fe-nut"
+  }, featured.nutshell), /*#__PURE__*/React.createElement("span", {
+    className: "thk-fe-cta"
+  }, "Read the full profile →")), list.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "empty"
+  }, "No thinkers match that search.") : groups.map(g => /*#__PURE__*/React.createElement("div", {
+    key: g.disc
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "thk-group"
+  }, g.disc), g.items.map(f => {
+    const hue = FIG_HUE[f.discipline] || 38;
+    return /*#__PURE__*/React.createElement("button", {
+      key: f.id,
+      className: "thk-card",
+      onClick: () => setSel(f.id)
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "thk-av",
+      style: {
+        background: "linear-gradient(145deg, hsl(" + hue + " 55% 32%), hsl(" + hue + " 60% 15%))",
+        borderColor: "hsl(" + hue + " 55% 55% / .6)",
+        color: "hsl(" + hue + " 72% 82%)"
       }
-    </div>
-  );
+    }, figInitials(f.name)), /*#__PURE__*/React.createElement("span", {
+      className: "thk-info"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "thk-disc",
+      style: {
+        color: "hsl(" + hue + " 60% 70%)"
+      }
+    }, f.discipline), /*#__PURE__*/React.createElement("span", {
+      className: "thk-name"
+    }, f.name), /*#__PURE__*/React.createElement("span", {
+      className: "thk-dates"
+    }, f.dates), /*#__PURE__*/React.createElement("span", {
+      className: "thk-role"
+    }, f.role)), /*#__PURE__*/React.createElement("span", {
+      className: "thk-chev"
+    }, "›"));
+  }))));
 }
-
 function Laws() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("All");
-  const cats = ["All"]; LAWS.forEach((l) => { if (cats.indexOf(l.cat) < 0) cats.push(l.cat); });
+  const cats = ["All"];
+  LAWS.forEach(l => {
+    if (cats.indexOf(l.cat) < 0) cats.push(l.cat);
+  });
   const ql = q.toLowerCase().trim();
-  let list = LAWS.filter((l) => {
+  let list = LAWS.filter(l => {
     if (cat !== "All" && l.cat !== cat) return false;
     if (!ql) return true;
     return (l.name + " " + l.desc + " " + l.cat + " " + l.use + " " + l.evidence).toLowerCase().includes(ql);
   });
-  const groups = []; let last = null;
-  list.forEach((l) => { if (l.cat !== last) { groups.push({ cat: l.cat, items: [] }); last = l.cat; } groups[groups.length - 1].items.push(l); });
-  return (
-    <div className="laws">
-      <h1 className="page-title">Laws &amp; biases</h1>
-      <p className="page-sub">Cognitive, behavioural and organisational laws, with how strong the evidence is and where they apply.</p>
-      <input className="thk-search" type="text" placeholder="Search laws, biases, uses…" value={q} onChange={(e) => setQ(e.target.value)} />
-      <div className="thk-filters">
-        {cats.map((c) => <button key={c} className={"thk-filter" + (c === cat ? " on" : "")} onClick={() => setCat(c)}>{c}</button>)}
-      </div>
-      {list.length === 0
-        ? <div className="empty">No laws match that search.</div>
-        : groups.map((g) => (
-            <div key={g.cat}>
-              <div className="thk-group">{g.cat}</div>
-              {g.items.map((l) => (
-                <div key={l.name} className="law-card">
-                  <div className="law-top">
-                    <span className="law-name">{l.name}</span>
-                    <span className="law-ev" style={{ color: lawEvColor(l.evidence), borderColor: lawEvColor(l.evidence) }}>{l.evidence}</span>
-                  </div>
-                  <p className="law-desc">{l.desc}</p>
-                  <div className="law-use"><span>Applied to</span> {l.use}</div>
-                </div>
-              ))}
-            </div>
-          ))
-      }
-    </div>
-  );
+  const groups = [];
+  let last = null;
+  list.forEach(l => {
+    if (l.cat !== last) {
+      groups.push({
+        cat: l.cat,
+        items: []
+      });
+      last = l.cat;
+    }
+    groups[groups.length - 1].items.push(l);
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    className: "laws"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "page-title"
+  }, "Laws & biases"), /*#__PURE__*/React.createElement("p", {
+    className: "page-sub"
+  }, "Cognitive, behavioural and organisational laws, with how strong the evidence is and where they apply."), /*#__PURE__*/React.createElement("input", {
+    className: "thk-search",
+    type: "text",
+    placeholder: "Search laws, biases, uses…",
+    value: q,
+    onChange: e => setQ(e.target.value)
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "thk-filters"
+  }, cats.map(c => /*#__PURE__*/React.createElement("button", {
+    key: c,
+    className: "thk-filter" + (c === cat ? " on" : ""),
+    onClick: () => setCat(c)
+  }, c))), list.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "empty"
+  }, "No laws match that search.") : groups.map(g => /*#__PURE__*/React.createElement("div", {
+    key: g.cat
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "thk-group"
+  }, g.cat), g.items.map(l => /*#__PURE__*/React.createElement("div", {
+    key: l.name,
+    className: "law-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "law-top"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "law-name"
+  }, l.name), /*#__PURE__*/React.createElement("span", {
+    className: "law-ev",
+    style: {
+      color: lawEvColor(l.evidence),
+      borderColor: lawEvColor(l.evidence)
+    }
+  }, l.evidence)), /*#__PURE__*/React.createElement("p", {
+    className: "law-desc"
+  }, l.desc), /*#__PURE__*/React.createElement("div", {
+    className: "law-use"
+  }, /*#__PURE__*/React.createElement("span", null, "Applied to"), " ", l.use))))));
 }
-
 function App() {
+  var _DISCIPLINES$find2;
   const [state, setState] = useState(loadState);
   const [tab, setTab] = useState("feed");
   const feedRef = useRef(null);
-
-  useEffect(() => { saveState(state); }, [state]);
-
-  const dispatch = useCallback((a) => {
-    setState((s) => {
-      const n = { ...s };
+  useEffect(() => {
+    saveState(state);
+  }, [state]);
+  const dispatch = useCallback(a => {
+    setState(s => {
+      const n = {
+        ...s
+      };
       switch (a.t) {
-        case "seen": n.seen = { ...s.seen, [a.id]: 1 }; break;
-        case "like": n.liked = { ...s.liked }; if (n.liked[a.id]) delete n.liked[a.id]; else n.liked[a.id] = 1; break;
-        case "save": n.saved = { ...s.saved }; if (n.saved[a.id]) delete n.saved[a.id]; else n.saved[a.id] = 1; break;
-        case "quiz": {
-          const cur = s.quiz[a.id] || { total: 0, correct: 0 };
-          n.quiz = { ...s.quiz, [a.id]: { total: cur.total + 1, correct: cur.correct + (a.correct ? 1 : 0) } };
+        case "seen":
+          n.seen = {
+            ...s.seen,
+            [a.id]: 1
+          };
           break;
-        }
-        case "level": n.level = a.v; break;
-        case "focus": n.focus = a.code; n.domain = null; break;
-        case "domain": n.domain = a.code; n.focus = null; break;
-        case "proposal": n.proposal = { ...s.proposal, [a.k]: a.v }; break;
-        case "proposal-clear": n.proposal = {}; break;
-        case "reset": return { ...defaultState };
-        case "replace": return { ...defaultState, ...a.state };
-        default: break;
+        case "like":
+          n.liked = {
+            ...s.liked
+          };
+          if (n.liked[a.id]) delete n.liked[a.id];else n.liked[a.id] = 1;
+          break;
+        case "save":
+          n.saved = {
+            ...s.saved
+          };
+          if (n.saved[a.id]) delete n.saved[a.id];else n.saved[a.id] = 1;
+          break;
+        case "quiz":
+          {
+            const cur = s.quiz[a.id] || {
+              total: 0,
+              correct: 0
+            };
+            n.quiz = {
+              ...s.quiz,
+              [a.id]: {
+                total: cur.total + 1,
+                correct: cur.correct + (a.correct ? 1 : 0)
+              }
+            };
+            break;
+          }
+        case "level":
+          n.level = a.v;
+          break;
+        case "focus":
+          n.focus = a.code;
+          n.domain = null;
+          break;
+        case "domain":
+          n.domain = a.code;
+          n.focus = null;
+          break;
+        case "proposal":
+          n.proposal = {
+            ...s.proposal,
+            [a.k]: a.v
+          };
+          break;
+        case "proposal-clear":
+          n.proposal = {};
+          break;
+        case "reset":
+          return {
+            ...defaultState
+          };
+        case "replace":
+          return {
+            ...defaultState,
+            ...a.state
+          };
+        default:
+          break;
       }
       return n;
     });
   }, []);
-
   const feedCards = useMemo(() => {
     let cards = ALL_CARDS;
-    if (state.focus) cards = cards.filter((c) => c.disc.code === state.focus);
-    else if (state.domain) cards = cards.filter((c) => c.disc.domain === state.domain);
-    if (state.level === "7") cards = cards.filter((c) => c.level === 7);
-    else if (state.level === "8") cards = cards.filter((c) => c.level === 8);
+    if (state.focus) cards = cards.filter(c => c.disc.code === state.focus);else if (state.domain) cards = cards.filter(c => c.disc.domain === state.domain);
+    if (state.level === "7") cards = cards.filter(c => c.level === 7);else if (state.level === "8") cards = cards.filter(c => c.level === 8);
     return cards;
   }, [state.focus, state.domain, state.level]);
-
-  useEffect(() => { if (feedRef.current) feedRef.current.scrollTop = 0; }, [state.focus, state.domain, state.level, tab]);
-
-  const focusName = state.focus ? DISCIPLINES.find(d => d.code === state.focus)?.name : null;
-
-  return (
-    <div className="app">
-      <div className="topbar">
-        <div className="brand"><span className="mark">C</span><span className="word">Cortex</span></div>
-        <div className="ctx">
-          {tab === "feed" && (focusName
-            ? <button className="pill" onClick={() => dispatch({ t: "focus", code: null })}>{focusName} ✕</button>
-            : (state.domain ? <button className="pill" onClick={() => dispatch({ t: "domain", code: null })}>{DOMAINS[state.domain].label} ✕</button> : <span className="pill ghosted">For you</span>))}
-        </div>
-      </div>
-
-      {tab === "feed" && <Stories state={state} dispatch={dispatch} setTab={setTab} />}
-      <main ref={feedRef} className={"scroll" + (tab === "feed" ? " is-feed" : "")}>
-        {tab === "feed" && <Feed cards={feedCards} state={state} dispatch={dispatch} />}
-        {tab === "browse" && <Browse state={state} dispatch={dispatch} setTab={setTab} />}
-        {tab === "thinkers" && <Thinkers />}
-        {tab === "laws" && <Laws />}
-        {tab === "saved" && <Saved state={state} dispatch={dispatch} />}
-        {tab === "proposal" && <Proposal state={state} dispatch={dispatch} />}
-        {tab === "you" && <You state={state} dispatch={dispatch} />}
-      </main>
-
-      <nav className="tabbar">
-        {[["feed", "Feed", "▤"], ["browse", "Browse", "▦"], ["thinkers", "Thinkers", "Ψ"], ["laws", "Laws", "§"], ["saved", "Saved", "★"], ["proposal", "Proposal", "✎"], ["you", "You", "◍"]].map(([k, lab, ic]) => (
-          <button key={k} className={"tab" + (tab === k ? " on" : "")} onClick={() => setTab(k)}>
-            <span className="tab-ic">{ic}</span><span className="tab-lab">{lab}</span>
-          </button>
-        ))}
-      </nav>
-    </div>
-  );
+  useEffect(() => {
+    if (feedRef.current) feedRef.current.scrollTop = 0;
+  }, [state.focus, state.domain, state.level, tab]);
+  const focusName = state.focus ? (_DISCIPLINES$find2 = DISCIPLINES.find(d => d.code === state.focus)) === null || _DISCIPLINES$find2 === void 0 ? void 0 : _DISCIPLINES$find2.name : null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "app"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "topbar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "brand"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "mark"
+  }, "C"), /*#__PURE__*/React.createElement("span", {
+    className: "word"
+  }, "Cortex")), /*#__PURE__*/React.createElement("div", {
+    className: "ctx"
+  }, tab === "feed" && (focusName ? /*#__PURE__*/React.createElement("button", {
+    className: "pill",
+    onClick: () => dispatch({
+      t: "focus",
+      code: null
+    })
+  }, focusName, " ✕") : state.domain ? /*#__PURE__*/React.createElement("button", {
+    className: "pill",
+    onClick: () => dispatch({
+      t: "domain",
+      code: null
+    })
+  }, DOMAINS[state.domain].label, " ✕") : /*#__PURE__*/React.createElement("span", {
+    className: "pill ghosted"
+  }, "For you")))), tab === "feed" && /*#__PURE__*/React.createElement(Stories, {
+    state: state,
+    dispatch: dispatch,
+    setTab: setTab
+  }), /*#__PURE__*/React.createElement("main", {
+    ref: feedRef,
+    className: "scroll" + (tab === "feed" ? " is-feed" : "")
+  }, tab === "feed" && /*#__PURE__*/React.createElement(Feed, {
+    cards: feedCards,
+    state: state,
+    dispatch: dispatch
+  }), tab === "browse" && /*#__PURE__*/React.createElement(Browse, {
+    state: state,
+    dispatch: dispatch,
+    setTab: setTab
+  }), tab === "thinkers" && /*#__PURE__*/React.createElement(Thinkers, null), tab === "laws" && /*#__PURE__*/React.createElement(Laws, null), tab === "saved" && /*#__PURE__*/React.createElement(Saved, {
+    state: state,
+    dispatch: dispatch
+  }), tab === "proposal" && /*#__PURE__*/React.createElement(Proposal, {
+    state: state,
+    dispatch: dispatch
+  }), tab === "you" && /*#__PURE__*/React.createElement(You, {
+    state: state,
+    dispatch: dispatch
+  })), /*#__PURE__*/React.createElement("nav", {
+    className: "tabbar"
+  }, [["feed", "Feed", "▤"], ["browse", "Browse", "▦"], ["thinkers", "Thinkers", "Ψ"], ["laws", "Laws", "§"], ["saved", "Saved", "★"], ["proposal", "Proposal", "✎"], ["you", "You", "◍"]].map(([k, lab, ic]) => /*#__PURE__*/React.createElement("button", {
+    key: k,
+    className: "tab" + (tab === k ? " on" : ""),
+    onClick: () => setTab(k)
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "tab-ic"
+  }, ic), /*#__PURE__*/React.createElement("span", {
+    className: "tab-lab"
+  }, lab)))));
 }
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-
+ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
 </script>
 <script>
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("./sw.js").catch(function(){})});}
