@@ -1,6 +1,6 @@
 /* Cortex service worker — offline app shell.
    Bump CACHE when you change index.html to push an update. */
-const CACHE = "cortex-v4";
+const CACHE = "cortex-v5";
 const ASSETS = [
   "./",
   "./index.html",
@@ -11,9 +11,7 @@ const ASSETS = [
   "./apple-touch-icon.png",
   "./favicon.png",
   "https://unpkg.com/react@18/umd/react.production.min.js",
-  "https://unpkg.com/react-dom@18/umd/react-dom.production.min.js",
-  "https://unpkg.com/@babel/standalone/babel.min.js"
-];
+  "https://unpkg.com/react-dom@18/umd/react-dom.production.min.js",];
 
 // Cache each asset individually so one failure doesn't abort the whole install.
 self.addEventListener("install", (e) => {
